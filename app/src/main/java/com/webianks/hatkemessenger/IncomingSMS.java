@@ -1,10 +1,13 @@
 package com.webianks.hatkemessenger;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.NotificationCompat;
 import android.telephony.SmsMessage;
 import android.util.Log;
 
@@ -18,7 +21,7 @@ public class IncomingSMS extends BroadcastReceiver {
     private String TAG = IncomingSMS.class.getSimpleName();
     private Bundle bundle;
     private SmsMessage currentSMS;
-    private String message;
+    private int mNotificationId = 101;
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -37,15 +40,43 @@ public class IncomingSMS extends BroadcastReceiver {
                         currentSMS = getIncomingMessage(aObject, bundle);
 
                         String senderNo = currentSMS.getDisplayOriginatingAddress();
+                        String message = currentSMS.getDisplayMessageBody();
+                        //Log.d(TAG, "senderNum: " + senderNo + " :\n message: " + message);
 
-                        message = currentSMS.getDisplayMessageBody();
-                        Log.d(TAG, "senderNum: " + senderNo + " :\n message: " + message);
+                        issueNotification(context, senderNo, message);
+
+
                     }
                     this.abortBroadcast();
                     // End of loop
                 }
             }
         } // bundle null
+    }
+
+    private void issueNotification(Context context, String senderNo, String message) {
+
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(context)
+                        .setSmallIcon(R.mipmap.ic_launcher)
+                        .setContentTitle(senderNo)
+                        .setStyle(new NotificationCompat.BigTextStyle().bigText(message))
+                        .setContentText(message);
+
+        Intent resultIntent = new Intent(context, ViewSMSActivity.class);
+        PendingIntent resultPendingIntent =
+                PendingIntent.getActivity(
+                        context,
+                        0,
+                        resultIntent,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                );
+
+        mBuilder.setContentIntent(resultPendingIntent);
+
+        NotificationManager mNotifyMgr =
+                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotifyMgr.notify(mNotificationId, mBuilder.build());
     }
 
     private SmsMessage getIncomingMessage(Object aObject, Bundle bundle) {
