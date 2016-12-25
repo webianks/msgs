@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    >
+
+    <com.webianks.hatkemessenger.customViews.RoundedImageView
+        android:id="@+id/smsImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_imageview"
+        android:src="@drawable/ic_account_circle_black_36dp" />
+
+    <TextView
+        android:id="@+id/smsSender"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_sender"
+        android:layout_marginRight="@dimen/margin_imageview"
+        android:layout_toRightOf="@id/smsImage"
+        android:text="@string/title"
+        android:textAllCaps="true"
+        android:textColor="@color/colorPrimaryText" />
+
+    <TextView
+        android:id="@+id/smsContent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/smsSender"
+        android:layout_marginRight="@dimen/margin_imageview"
+        android:layout_toRightOf="@id/smsImage"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:text="@string/content_small" />
+
+
+</RelativeLayout>

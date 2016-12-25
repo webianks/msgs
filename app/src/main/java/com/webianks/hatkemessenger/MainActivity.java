@@ -5,19 +5,36 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.widget.Toast;
+
+import com.webianks.hatkemessenger.adapters.AllConversationAdapters;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+
+    private RecyclerView recyclerView;
+    private List<Sms> totalSms;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Toast.makeText(this,"You have "+getAllSms().size()+" SMS",Toast.LENGTH_LONG).show();
+        init();
 
+        totalSms = getAllSms();
+        Toast.makeText(this, "You have " + totalSms.size() + " SMS", Toast.LENGTH_LONG).show();
+
+    }
+
+    private void init() {
+        recyclerView = (RecyclerView) findViewById(R.id.recyclerview);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(linearLayoutManager);
     }
 
     public List<Sms> getAllSms() {
@@ -54,6 +71,14 @@ public class MainActivity extends AppCompatActivity {
             //no SMS to show
         }
         c.close();
+
+        setRecyclerView(lstSms);
+
         return lstSms;
+    }
+
+    private void setRecyclerView(List<Sms> totalSms) {
+        AllConversationAdapters allConversationAdapters = new AllConversationAdapters(this,totalSms);
+        recyclerView.setAdapter(allConversationAdapters);
     }
 }
