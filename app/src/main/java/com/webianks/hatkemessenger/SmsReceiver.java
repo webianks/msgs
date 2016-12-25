@@ -3,8 +3,10 @@ package com.webianks.hatkemessenger;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
@@ -15,10 +17,10 @@ import android.util.Log;
  * Created by R Ankit on 24-12-2016.
  */
 
-public class IncomingSMS extends BroadcastReceiver {
+public class SmsReceiver extends BroadcastReceiver {
 
 
-    private String TAG = IncomingSMS.class.getSimpleName();
+    private String TAG = SmsReceiver.class.getSimpleName();
     private Bundle bundle;
     private SmsMessage currentSMS;
     private int mNotificationId = 101;
@@ -44,7 +46,7 @@ public class IncomingSMS extends BroadcastReceiver {
                         //Log.d(TAG, "senderNum: " + senderNo + " :\n message: " + message);
 
                         issueNotification(context, senderNo, message);
-
+                        saveSmsInInbox(context, senderNo, message);
 
                     }
                     this.abortBroadcast();
@@ -52,6 +54,15 @@ public class IncomingSMS extends BroadcastReceiver {
                 }
             }
         } // bundle null
+    }
+
+    private void saveSmsInInbox(Context context, String senderNo, String message) {
+
+        ContentValues values = new ContentValues();
+        values.put("address", senderNo);
+        values.put("body", message);
+        context.getContentResolver().insert(Uri.parse("content://sms/inbox"), values);
+
     }
 
     private void issueNotification(Context context, String senderNo, String message) {
@@ -77,6 +88,7 @@ public class IncomingSMS extends BroadcastReceiver {
         NotificationManager mNotifyMgr =
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         mNotifyMgr.notify(mNotificationId, mBuilder.build());
+
     }
 
     private SmsMessage getIncomingMessage(Object aObject, Bundle bundle) {
