@@ -1,24 +1,39 @@
 package com.webianks.hatkemessenger;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.LoaderManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.telephony.SmsManager;
+import android.text.TextUtils;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.Toast;
+
 import com.webianks.hatkemessenger.adapters.SingleGroupAdapter;
 import com.webianks.hatkemessenger.constants.Constants;
 import com.webianks.hatkemessenger.constants.SmsContract;
 
-public class SmsDetailedView extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class SmsDetailedView extends AppCompatActivity implements
+        LoaderManager.LoaderCallbacks<Cursor>, View.OnClickListener {
 
     private String contact;
     private SingleGroupAdapter singleGroupAdapter;
     private RecyclerView recyclerView;
+    private EditText etMessage;
+    private ImageView btSend;
+    private String message;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +57,11 @@ public class SmsDetailedView extends AppCompatActivity implements LoaderManager.
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setReverseLayout(true);
         recyclerView.setLayoutManager(linearLayoutManager);
+
+        etMessage = (EditText) findViewById(R.id.etMessage);
+        btSend = (ImageView) findViewById(R.id.btSend);
+
+        btSend.setOnClickListener(this);
 
         setRecyclerView(null);
 
@@ -96,5 +116,51 @@ public class SmsDetailedView extends AppCompatActivity implements LoaderManager.
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         singleGroupAdapter.swapCursor(null);
+    }
+
+    @Override
+    public void onClick(View view) {
+
+        switch (view.getId()){
+            case R.id.btSend:
+                sendSMSMessage();
+                break;
+        }
+    }
+
+    protected void sendSMSMessage() {
+
+        message = etMessage.getText().toString();
+
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.SEND_SMS)
+                != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.SEND_SMS)) {
+            } else {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.SEND_SMS},
+                        Constants.MY_PERMISSIONS_REQUEST_SEND_SMS);
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case Constants.MY_PERMISSIONS_REQUEST_SEND_SMS: {
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    SmsManager smsManager = SmsManager.getDefault();
+                    smsManager.sendTextMessage(contact, null, message, null, null);
+                    Toast.makeText(getApplicationContext(), "SMS sent.",
+                            Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(getApplicationContext(),
+                            "SMS faild, please try again.", Toast.LENGTH_LONG).show();
+                    return;
+                }
+            }
+        }
     }
 }

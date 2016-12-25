@@ -35,6 +35,7 @@
             android:weightSum="2">
 
             <EditText
+                android:id="@+id/etMessage"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1.6"
@@ -44,11 +45,14 @@
                 />
 
             <ImageView
+                android:id="@+id/btSend"
+                android:clickable="true"
                 android:layout_weight="0.4"
                 android:layout_width="0dp"
                 android:layout_gravity="center"
                 android:src="@drawable/ic_action_content_send"
-                android:layout_height="wrap_content" />
+                android:padding="10dp"
+                android:layout_height="match_parent" />
 
         </LinearLayout>
 

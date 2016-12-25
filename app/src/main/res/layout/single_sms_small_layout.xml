@@ -32,6 +32,7 @@
         android:layout_toRightOf="@id/smsImage"
         android:ellipsize="end"
         android:maxLines="1"
+        android:textSize="@dimen/previewMessageSize"
         android:text="@string/content_small" />
 
 
