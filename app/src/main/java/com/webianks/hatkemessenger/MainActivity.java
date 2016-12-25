@@ -22,7 +22,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private RecyclerView recyclerView;
     private FloatingActionButton fab;
-    private int ALL_SMS_LOADER = 123;
     private AllConversationAdapter allConversationAdapter;
 
     @Override
@@ -105,7 +104,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onResume() {
         super.onResume();
-        getSupportLoaderManager().initLoader(ALL_SMS_LOADER, null, this);
+        getSupportLoaderManager().initLoader(Constants.ALL_SMS_LOADER, null, this);
     }
 
     @Override

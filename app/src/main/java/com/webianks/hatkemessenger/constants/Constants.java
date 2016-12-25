@@ -7,5 +7,6 @@ package com.webianks.hatkemessenger.constants;
 public class Constants {
 
     public static final String CONTACT_NAME = "contact_name";
-
+    public static final int CONVERSATION_LOADER = 321;
+    public static final int ALL_SMS_LOADER = 123;
 }
