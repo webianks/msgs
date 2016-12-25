@@ -1,12 +1,15 @@
 package com.webianks.hatkemessenger;
 
 import android.content.ContentResolver;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.widget.Toast;
 
 import com.webianks.hatkemessenger.adapters.AllConversationAdapters;
@@ -14,10 +17,11 @@ import com.webianks.hatkemessenger.adapters.AllConversationAdapters;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private RecyclerView recyclerView;
-    private List<Sms> totalSms;
+    private FloatingActionButton fab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,18 +30,23 @@ public class MainActivity extends AppCompatActivity {
 
         init();
 
-        totalSms = getAllSms();
-        Toast.makeText(this, "You have " + totalSms.size() + " SMS", Toast.LENGTH_LONG).show();
+        try {
+            getAllSms();
+        } catch (Exception e) {
+        }
 
     }
 
     private void init() {
         recyclerView = (RecyclerView) findViewById(R.id.recyclerview);
+        fab = (FloatingActionButton) findViewById(R.id.fab_new);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
+
+        fab.setOnClickListener(this);
     }
 
-    public List<Sms> getAllSms() {
+    public List<Sms> getAllSms() throws Exception {
 
         List<Sms> lstSms = new ArrayList<Sms>();
         Sms objSms = new Sms();
@@ -78,7 +87,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setRecyclerView(List<Sms> totalSms) {
-        AllConversationAdapters allConversationAdapters = new AllConversationAdapters(this,totalSms);
+        AllConversationAdapters allConversationAdapters = new AllConversationAdapters(this, totalSms);
         recyclerView.setAdapter(allConversationAdapters);
+    }
+
+    @Override
+    public void onClick(View view) {
+
+        switch (view.getId()) {
+
+            case R.id.fab_new:
+
+                startActivity(new Intent(this, SendSMSActivity.class));
+                break;
+        }
     }
 }
