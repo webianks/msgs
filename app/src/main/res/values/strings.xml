@@ -2,4 +2,5 @@
     <string name="app_name">Hatke Messenger</string>
     <string name="title">SENDER</string>
     <string name="content_small">This is the preview of the full sms. To read more click on the sms.</string>
+    <string name="title_activity_sms_detailed_view">SmsDetailedView</string>
 </resources>

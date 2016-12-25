@@ -19,6 +19,7 @@ public class AllConversationAdapters extends RecyclerView.Adapter<AllConversatio
 
     private Context context;
     private List<Sms> smsList;
+    private ItemCLickListener itemClickListener;
 
     public AllConversationAdapters(Context context, List<Sms> smsList) {
         this.context = context;
@@ -47,7 +48,12 @@ public class AllConversationAdapters extends RecyclerView.Adapter<AllConversatio
         return smsList.size();
     }
 
-    public class MyHolder extends RecyclerView.ViewHolder {
+
+    public void setItemClickListener(ItemCLickListener itemClickListener){
+        this.itemClickListener = itemClickListener;
+    }
+
+    public class MyHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private RoundedImageView senderImage;
         private TextView senderContact;
@@ -58,6 +64,14 @@ public class AllConversationAdapters extends RecyclerView.Adapter<AllConversatio
             senderImage = (RoundedImageView) itemView.findViewById(R.id.smsImage);
             senderContact = (TextView) itemView.findViewById(R.id.smsSender);
             message = (TextView) itemView.findViewById(R.id.smsContent);
+
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View view) {
+            if (itemClickListener!=null)
+                itemClickListener.itemClicked(getAdapterPosition());
         }
     }
 }
