@@ -8,4 +8,5 @@
     <dimen name="margin_single_sms_bottom">2dp</dimen>
     <dimen name="margin_sender">14dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
+    <dimen name="type_box_height">50dp</dimen>
 </resources>
