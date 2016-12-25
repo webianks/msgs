@@ -1,26 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_sms_detailed_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.webianks.hatkemessenger.SmsDetailedView"
     android:orientation="vertical"
     android:weightSum="5"
-    >
+    tools:context="com.webianks.hatkemessenger.SmsDetailedView">
 
 
     <android.support.v7.widget.RecyclerView
-        android:layout_weight="4.5"
         android:id="@+id/recyclerview"
-        android:background="@color/convo_backgroung"
         android:layout_width="match_parent"
-        android:layout_height="0dp"/>
+        android:layout_height="match_parent"
+        android:layout_marginBottom="@dimen/type_box_height"
+        android:background="@color/conv_backgroung" />
 
     <RelativeLayout
-        android:layout_weight="0.5"
+        android:layout_gravity="bottom"
         android:layout_width="match_parent"
-        android:layout_height="0dp" />
+        android:layout_height="@dimen/type_box_height"
+        android:layout_weight="0.5">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/strip_color"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <EditText
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1.6"
+                android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                android:hint="@string/write_message"
+                style="@style/App_EditTextStyle"
+                />
+
+            <ImageView
+                android:layout_weight="0.4"
+                android:layout_width="0dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_action_content_send"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
 
 
-</LinearLayout>
+    </RelativeLayout>
+
+
+</FrameLayout>
