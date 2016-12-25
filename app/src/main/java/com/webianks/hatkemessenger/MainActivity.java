@@ -1,26 +1,29 @@
 package com.webianks.hatkemessenger;
 
-import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+
 import com.webianks.hatkemessenger.adapters.AllConversationAdapters;
 import com.webianks.hatkemessenger.adapters.ItemCLickListener;
 
-import java.util.ArrayList;
-import java.util.List;
 
-
-public class MainActivity extends AppCompatActivity implements View.OnClickListener, ItemCLickListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener,
+        ItemCLickListener, LoaderManager.LoaderCallbacks<Cursor> {
 
     private RecyclerView recyclerView;
     private FloatingActionButton fab;
+    private int ALL_SMS_LOADER = 123;
+    private AllConversationAdapters allConversationAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,11 +31,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
 
         init();
-
-        try {
-            getAllSms();
-        } catch (Exception e) {
-        }
+        setRecyclerView(null);
 
     }
 
@@ -44,7 +43,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         fab.setOnClickListener(this);
     }
 
-    public List<Sms> getAllSms() throws Exception {
+   /* public List<Sms> getAllSms() throws Exception {
 
         List<Sms> lstSms = new ArrayList<Sms>();
         Sms objSms = new Sms();
@@ -79,15 +78,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         c.close();
 
-        setRecyclerView(lstSms);
+
 
         return lstSms;
-    }
+    }*/
 
-    private void setRecyclerView(List<Sms> totalSms) {
-        AllConversationAdapters allConversationAdapters = new AllConversationAdapters(this, totalSms);
-        allConversationAdapters.setItemClickListener(this);
-        recyclerView.setAdapter(allConversationAdapters);
+    private void setRecyclerView(Cursor cursor) {
+        allConversationAdapter = new AllConversationAdapters(this, cursor);
+        allConversationAdapter.setItemClickListener(this);
+        recyclerView.setAdapter(allConversationAdapter);
     }
 
     @Override
@@ -104,8 +103,41 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
     @Override
-    public void itemClicked(int position) {
-        startActivity(new Intent(this,SmsDetailedView.class));
+    public void onResume() {
+        super.onResume();
+        getSupportLoaderManager().initLoader(ALL_SMS_LOADER, null, this);
     }
 
+    @Override
+    public void itemClicked(int position) {
+        startActivity(new Intent(this, SmsDetailedView.class));
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+
+        Uri sms_uri = Uri.parse("content://sms/");
+
+        return new CursorLoader(this,
+                sms_uri,
+                null,
+                null,
+                null,
+                null);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+
+        if (cursor != null && cursor.getCount() > 0) {
+            allConversationAdapter.swapCursor(cursor);
+        } else {
+            //no sms
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        allConversationAdapter.swapCursor(null);
+    }
 }

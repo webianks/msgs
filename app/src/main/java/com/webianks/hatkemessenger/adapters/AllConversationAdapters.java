@@ -1,6 +1,7 @@
 package com.webianks.hatkemessenger.adapters;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,12 +19,12 @@ import java.util.List;
 public class AllConversationAdapters extends RecyclerView.Adapter<AllConversationAdapters.MyHolder> {
 
     private Context context;
-    private List<Sms> smsList;
+    private Cursor dataCursor;
     private ItemCLickListener itemClickListener;
 
-    public AllConversationAdapters(Context context, List<Sms> smsList) {
+    public AllConversationAdapters(Context context,Cursor dataCursor) {
         this.context = context;
-        this.smsList = smsList;
+        this.dataCursor = dataCursor;
     }
 
     @Override
@@ -38,14 +39,28 @@ public class AllConversationAdapters extends RecyclerView.Adapter<AllConversatio
     @Override
     public void onBindViewHolder(AllConversationAdapters.MyHolder holder, int position) {
 
-        holder.senderContact.setText(smsList.get(position).getAddress());
-        holder.message.setText(smsList.get(position).getMsg());
+        dataCursor.moveToPosition(position);
 
+        holder.senderContact.setText(dataCursor.getString(dataCursor.getColumnIndexOrThrow("address")));
+        holder.message.setText(dataCursor.getString(dataCursor.getColumnIndexOrThrow("body")));
+
+    }
+
+    public Cursor swapCursor(Cursor cursor) {
+        if (dataCursor == cursor) {
+            return null;
+        }
+        Cursor oldCursor = dataCursor;
+        this.dataCursor = cursor;
+        if (cursor != null) {
+            this.notifyDataSetChanged();
+        }
+        return oldCursor;
     }
 
     @Override
     public int getItemCount() {
-        return smsList.size();
+        return (dataCursor == null) ? 0 : dataCursor.getCount();
     }
 
 
