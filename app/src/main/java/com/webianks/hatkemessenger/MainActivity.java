@@ -2,7 +2,6 @@ package com.webianks.hatkemessenger;
 
 import android.content.Intent;
 import android.database.Cursor;
-import android.net.Uri;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -12,9 +11,11 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+
 import com.webianks.hatkemessenger.adapters.AllConversationAdapter;
 import com.webianks.hatkemessenger.adapters.ItemCLickListener;
 import com.webianks.hatkemessenger.constants.Constants;
+import com.webianks.hatkemessenger.constants.SmsContract;
 
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener,
@@ -108,11 +109,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     @Override
-    public void itemClicked(int position,Cursor cursor) {
+    public void itemClicked(int position, Cursor cursor) {
 
         String SENDER_CONTACT = cursor.getString(cursor.getColumnIndexOrThrow("address"));
         Intent intent = new Intent(this, SmsDetailedView.class);
-        intent.putExtra(Constants.CONTACT_NAME,SENDER_CONTACT);
+        intent.putExtra(Constants.CONTACT_NAME, SENDER_CONTACT);
         startActivity(intent);
 
     }
@@ -120,10 +121,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 
-        Uri sms_uri = Uri.parse("content://sms/");
-
         return new CursorLoader(this,
-                sms_uri,
+                SmsContract.ALL_SMS_URI,
                 null,
                 null,
                 null,
