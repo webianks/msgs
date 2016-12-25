@@ -6,7 +6,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+
 import com.webianks.hatkemessenger.R;
 import com.webianks.hatkemessenger.customViews.RoundedImageView;
 
@@ -62,7 +64,7 @@ public class AllConversationAdapter extends RecyclerView.Adapter<AllConversation
     }
 
 
-    public void setItemClickListener(ItemCLickListener itemClickListener){
+    public void setItemClickListener(ItemCLickListener itemClickListener) {
         this.itemClickListener = itemClickListener;
     }
 
@@ -71,21 +73,23 @@ public class AllConversationAdapter extends RecyclerView.Adapter<AllConversation
         private RoundedImageView senderImage;
         private TextView senderContact;
         private TextView message;
+        private RelativeLayout mainLayout;
 
         public MyHolder(View itemView) {
             super(itemView);
             senderImage = (RoundedImageView) itemView.findViewById(R.id.smsImage);
             senderContact = (TextView) itemView.findViewById(R.id.smsSender);
             message = (TextView) itemView.findViewById(R.id.smsContent);
+            mainLayout = (RelativeLayout) itemView.findViewById(R.id.small_layout_main);
 
-            itemView.setOnClickListener(this);
+            mainLayout.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View view) {
-            if (itemClickListener!=null){
+            if (itemClickListener != null) {
                 dataCursor.moveToPosition(getAdapterPosition());
-                itemClickListener.itemClicked(getAdapterPosition(),dataCursor);
+                itemClickListener.itemClicked(getAdapterPosition(), dataCursor);
             }
 
         }

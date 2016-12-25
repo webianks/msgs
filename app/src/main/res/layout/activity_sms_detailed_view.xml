@@ -49,6 +49,7 @@
                 android:clickable="true"
                 android:layout_weight="0.4"
                 android:layout_width="0dp"
+                android:background="@drawable/main_background"
                 android:layout_gravity="center"
                 android:src="@drawable/ic_action_content_send"
                 android:padding="10dp"

@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/small_layout_main"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    >
+    android:background="@drawable/main_background"
+    android:clickable="true"
+    android:orientation="vertical">
 
     <com.webianks.hatkemessenger.customViews.RoundedImageView
         android:id="@+id/smsImage"
@@ -16,8 +18,8 @@
         android:id="@+id/smsSender"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_sender"
         android:layout_marginRight="@dimen/margin_imageview"
+        android:layout_marginTop="@dimen/margin_sender"
         android:layout_toRightOf="@id/smsImage"
         android:text="@string/title"
         android:textAllCaps="true"
@@ -32,8 +34,8 @@
         android:layout_toRightOf="@id/smsImage"
         android:ellipsize="end"
         android:maxLines="1"
-        android:textSize="@dimen/previewMessageSize"
-        android:text="@string/content_small" />
+        android:text="@string/content_small"
+        android:textSize="@dimen/previewMessageSize" />
 
 
 </RelativeLayout>
