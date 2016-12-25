@@ -8,27 +8,25 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import com.webianks.hatkemessenger.R;
-import com.webianks.hatkemessenger.Sms;
 import com.webianks.hatkemessenger.customViews.RoundedImageView;
-import java.util.List;
 
 /**
  * Created by R Ankit on 25-12-2016.
  */
 
-public class AllConversationAdapters extends RecyclerView.Adapter<AllConversationAdapters.MyHolder> {
+public class AllConversationAdapter extends RecyclerView.Adapter<AllConversationAdapter.MyHolder> {
 
     private Context context;
     private Cursor dataCursor;
     private ItemCLickListener itemClickListener;
 
-    public AllConversationAdapters(Context context,Cursor dataCursor) {
+    public AllConversationAdapter(Context context, Cursor dataCursor) {
         this.context = context;
         this.dataCursor = dataCursor;
     }
 
     @Override
-    public AllConversationAdapters.MyHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public AllConversationAdapter.MyHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(R.layout.single_sms_small_layout, parent, false);
@@ -37,7 +35,7 @@ public class AllConversationAdapters extends RecyclerView.Adapter<AllConversatio
     }
 
     @Override
-    public void onBindViewHolder(AllConversationAdapters.MyHolder holder, int position) {
+    public void onBindViewHolder(AllConversationAdapter.MyHolder holder, int position) {
 
         dataCursor.moveToPosition(position);
 
@@ -85,8 +83,11 @@ public class AllConversationAdapters extends RecyclerView.Adapter<AllConversatio
 
         @Override
         public void onClick(View view) {
-            if (itemClickListener!=null)
-                itemClickListener.itemClicked(getAdapterPosition());
+            if (itemClickListener!=null){
+                dataCursor.moveToPosition(getAdapterPosition());
+                itemClickListener.itemClicked(getAdapterPosition(),dataCursor);
+            }
+
         }
     }
 }

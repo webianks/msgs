@@ -12,9 +12,9 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-
-import com.webianks.hatkemessenger.adapters.AllConversationAdapters;
+import com.webianks.hatkemessenger.adapters.AllConversationAdapter;
 import com.webianks.hatkemessenger.adapters.ItemCLickListener;
+import com.webianks.hatkemessenger.constants.Constants;
 
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener,
@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private RecyclerView recyclerView;
     private FloatingActionButton fab;
     private int ALL_SMS_LOADER = 123;
-    private AllConversationAdapters allConversationAdapter;
+    private AllConversationAdapter allConversationAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }*/
 
     private void setRecyclerView(Cursor cursor) {
-        allConversationAdapter = new AllConversationAdapters(this, cursor);
+        allConversationAdapter = new AllConversationAdapter(this, cursor);
         allConversationAdapter.setItemClickListener(this);
         recyclerView.setAdapter(allConversationAdapter);
     }
@@ -109,8 +109,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     @Override
-    public void itemClicked(int position) {
-        startActivity(new Intent(this, SmsDetailedView.class));
+    public void itemClicked(int position,Cursor cursor) {
+
+        String SENDER_CONTACT = cursor.getString(cursor.getColumnIndexOrThrow("address"));
+        Intent intent = new Intent(this, SmsDetailedView.class);
+        intent.putExtra(Constants.CONTACT_NAME,SENDER_CONTACT);
+        startActivity(intent);
+
     }
 
     @Override
