@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:weightSum="5"
-    tools:context="com.webianks.hatkemessenger.SmsDetailedView">
+    tools:context="com.webianks.hatkemessenger.activities.SmsDetailedView">
 
 
     <android.support.v7.widget.RecyclerView

@@ -1,5 +1,5 @@
 
-package com.webianks.hatkemessenger;
+package com.webianks.hatkemessenger.services;
 
 import android.app.Service;
 import android.content.Intent;

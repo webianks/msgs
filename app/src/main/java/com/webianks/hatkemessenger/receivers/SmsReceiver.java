@@ -1,4 +1,4 @@
-package com.webianks.hatkemessenger;
+package com.webianks.hatkemessenger.receivers;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -13,6 +13,8 @@ import android.support.v4.app.NotificationCompat;
 import android.telephony.SmsMessage;
 import android.util.Log;
 
+import com.webianks.hatkemessenger.R;
+import com.webianks.hatkemessenger.activities.SmsDetailedView;
 import com.webianks.hatkemessenger.constants.Constants;
 import com.webianks.hatkemessenger.services.SaveSmsService;
 
@@ -84,6 +86,7 @@ public class SmsReceiver extends BroadcastReceiver {
 
         Intent resultIntent = new Intent(context, SmsDetailedView.class);
         resultIntent.putExtra(Constants.CONTACT_NAME,senderNo);
+        resultIntent.putExtra(Constants.FROM_SMS_RECIEVER,true);
         PendingIntent resultPendingIntent =
                 PendingIntent.getActivity(
                         context,

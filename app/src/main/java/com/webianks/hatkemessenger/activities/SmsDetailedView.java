@@ -1,4 +1,4 @@
-package com.webianks.hatkemessenger;
+package com.webianks.hatkemessenger.activities;
 
 import android.Manifest;
 import android.content.Intent;
@@ -21,6 +21,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.webianks.hatkemessenger.R;
 import com.webianks.hatkemessenger.adapters.SingleGroupAdapter;
 import com.webianks.hatkemessenger.constants.Constants;
 import com.webianks.hatkemessenger.constants.SmsContract;
@@ -34,6 +35,7 @@ public class SmsDetailedView extends AppCompatActivity implements
     private EditText etMessage;
     private ImageView btSend;
     private String message;
+    private boolean from_reciever;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +51,7 @@ public class SmsDetailedView extends AppCompatActivity implements
 
         Intent intent = getIntent();
         contact = intent.getStringExtra(Constants.CONTACT_NAME);
+        from_reciever = intent.getBooleanExtra(Constants.FROM_SMS_RECIEVER, false);
 
         if (getSupportActionBar() != null)
             getSupportActionBar().setTitle(contact);
@@ -72,6 +75,10 @@ public class SmsDetailedView extends AppCompatActivity implements
 
         switch (item.getItemId()) {
             case android.R.id.home:
+
+                if (from_reciever)
+                    startActivity(new Intent(this, MainActivity.class));
+
                 finish();
                 break;
         }
@@ -121,7 +128,7 @@ public class SmsDetailedView extends AppCompatActivity implements
     @Override
     public void onClick(View view) {
 
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.btSend:
                 sendSMSMessage();
                 break;
@@ -162,5 +169,14 @@ public class SmsDetailedView extends AppCompatActivity implements
                 }
             }
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+
+        if (from_reciever) {
+            startActivity(new Intent(this, MainActivity.class));
+        } else
+            super.onBackPressed();
     }
 }
