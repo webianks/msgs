@@ -74,6 +74,10 @@
             </intent-filter>
         </service>
 
+        <service
+            android:name=".services.SaveSmsService"
+            android:exported="false" />
+
         <activity android:name=".ViewSMSActivity" />
         <activity android:name=".SmsDetailedView"></activity>
     </application>

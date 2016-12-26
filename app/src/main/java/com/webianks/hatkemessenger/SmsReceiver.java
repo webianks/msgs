@@ -13,6 +13,8 @@ import android.support.v4.app.NotificationCompat;
 import android.telephony.SmsMessage;
 import android.util.Log;
 
+import com.webianks.hatkemessenger.services.SaveSmsService;
+
 /**
  * Created by R Ankit on 24-12-2016.
  */
@@ -58,10 +60,10 @@ public class SmsReceiver extends BroadcastReceiver {
 
     private void saveSmsInInbox(Context context, String senderNo, String message) {
 
-        ContentValues values = new ContentValues();
-        values.put("address", senderNo);
-        values.put("body", message);
-        context.getContentResolver().insert(Uri.parse("content://sms/inbox"), values);
+        Intent serviceIntent = new Intent(context, SaveSmsService.class);
+        serviceIntent.putExtra("sender_no", senderNo);
+        serviceIntent.putExtra("message", message);
+        context.startService(serviceIntent);
 
     }
 
