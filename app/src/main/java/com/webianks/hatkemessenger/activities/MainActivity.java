@@ -1,4 +1,4 @@
-package com.webianks.hatkemessenger;
+package com.webianks.hatkemessenger.activities;
 
 import android.content.Intent;
 import android.database.Cursor;
@@ -12,6 +12,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import com.webianks.hatkemessenger.R;
+import com.webianks.hatkemessenger.SmsDetailedView;
 import com.webianks.hatkemessenger.adapters.AllConversationAdapter;
 import com.webianks.hatkemessenger.adapters.ItemCLickListener;
 import com.webianks.hatkemessenger.constants.Constants;

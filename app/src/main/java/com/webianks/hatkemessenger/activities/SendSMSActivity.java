@@ -1,4 +1,4 @@
-package com.webianks.hatkemessenger;
+package com.webianks.hatkemessenger.activities;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
@@ -13,6 +13,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.webianks.hatkemessenger.R;
 
 /**
  * Created by R Ankit on 24-12-2016.

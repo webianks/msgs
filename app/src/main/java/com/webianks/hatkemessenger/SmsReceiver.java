@@ -3,16 +3,17 @@ package com.webianks.hatkemessenger;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.telephony.SmsMessage;
 import android.util.Log;
 
+import com.webianks.hatkemessenger.constants.Constants;
 import com.webianks.hatkemessenger.services.SaveSmsService;
 
 /**
@@ -69,14 +70,20 @@ public class SmsReceiver extends BroadcastReceiver {
 
     private void issueNotification(Context context, String senderNo, String message) {
 
+        Bitmap icon = BitmapFactory.decodeResource(context.getResources(),
+                R.mipmap.ic_launcher);
+
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(context)
+                        .setLargeIcon(icon)
                         .setSmallIcon(R.mipmap.ic_launcher)
                         .setContentTitle(senderNo)
                         .setStyle(new NotificationCompat.BigTextStyle().bigText(message))
+                        .setAutoCancel(true)
                         .setContentText(message);
 
-        Intent resultIntent = new Intent(context, ViewSMSActivity.class);
+        Intent resultIntent = new Intent(context, SmsDetailedView.class);
+        resultIntent.putExtra(Constants.CONTACT_NAME,senderNo);
         PendingIntent resultPendingIntent =
                 PendingIntent.getActivity(
                         context,
