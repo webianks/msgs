@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorPrimary">#0391fd</color>
+    <color name="colorPrimaryDark">#0f71d3</color>
     <color name="colorAccent">#FF4081</color>
     <color name="colorPrimaryText">#212121</color>
     <color name="white">#ffffff</color>
-    <color name="dark">#757575</color>
-    <color name="conv_backgroung">#f0f2fd</color>
-    <color name="strip_color">#cbd3ff</color>
+    <color name="dark">#0391fd</color>
+    <color name="conv_backgroung">#eeeeee</color>
+    <color name="strip_color">#dddddd</color>
 </resources>
