@@ -20,7 +20,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.SendSMSActivity">
+        <activity android:name=".activities.NewSMSActivity">
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
                 <action android:name="android.intent.action.SENDTO" />
@@ -73,12 +73,14 @@
                 <data android:scheme="mmsto" />
             </intent-filter>
         </service>
-
         <service
             android:name=".services.SaveSmsService"
             android:exported="false" />
 
-        <activity android:name=".activities.SmsDetailedView"></activity>
+        <activity android:name=".activities.SmsDetailedView" />
+        <activity
+            android:name=".activities.SettingsActivity"
+            android:label="@string/title_activity_settings"></activity>
     </application>
 
 </manifest>

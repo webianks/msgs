@@ -10,6 +10,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.webianks.hatkemessenger.R;
@@ -97,11 +100,28 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             case R.id.fab_new:
 
-                startActivity(new Intent(this, SendSMSActivity.class));
+                startActivity(new Intent(this, NewSMSActivity.class));
                 break;
         }
     }
 
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.home_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()){
+            case R.id.ic_settings:
+                startActivity(new Intent(this,SettingsActivity.class));
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     @Override
     public void onResume() {

@@ -1,0 +1,10 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <SwitchPreference
+        android:checked="false"
+        android:key="backup"
+        android:summary="@string/backup_on_drive"
+        android:title="@string/google_drive_backup" />
+
+</PreferenceScreen>

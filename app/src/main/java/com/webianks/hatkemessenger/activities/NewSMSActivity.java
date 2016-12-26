@@ -20,7 +20,7 @@ import com.webianks.hatkemessenger.R;
  * Created by R Ankit on 24-12-2016.
  */
 
-public class SendSMSActivity extends AppCompatActivity implements View.OnClickListener {
+public class NewSMSActivity extends AppCompatActivity implements View.OnClickListener {
 
 
     private Button sendBtn;

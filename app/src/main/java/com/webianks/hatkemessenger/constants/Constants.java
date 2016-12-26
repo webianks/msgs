@@ -11,4 +11,5 @@ public class Constants {
     public static final int ALL_SMS_LOADER = 123;
     public static final int MY_PERMISSIONS_REQUEST_SEND_SMS = 0;
     public static final String FROM_SMS_RECIEVER = "from_sms_receiver";
+    public static final CharSequence BACKUP = "backup";
 }
