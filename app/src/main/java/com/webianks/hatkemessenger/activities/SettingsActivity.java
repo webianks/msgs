@@ -12,7 +12,6 @@ import android.preference.SwitchPreference;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -52,6 +51,23 @@ public class SettingsActivity extends AppCompatActivity implements GoogleApiClie
                     Drive.DriveApi.getAppFolder(getGoogleApiClient())
                             .createFile(getGoogleApiClient(), changeSet, result.getDriveContents())
                             .setResultCallback(fileCallback);
+
+                    Drive.DriveApi.getAppFolder(getGoogleApiClient()).listChildren(mGoogleApiClient).setResultCallback(metadataCallback);
+                }
+            };
+
+
+    final private ResultCallback<DriveApi.MetadataBufferResult> metadataCallback = new
+            ResultCallback<DriveApi.MetadataBufferResult>() {
+                @Override
+                public void onResult(DriveApi.MetadataBufferResult result) {
+                    if (!result.getStatus().isSuccess()) {
+                        showMessage("Problem while retrieving files");
+                        return;
+                    }
+                   // mResultsAdapter.clear();
+                  //  mResultsAdapter.append(result.getMetadataBuffer());
+                    showMessage("Successfully listed files. "+result.getMetadataBuffer().getCount());
                 }
             };
 
@@ -71,7 +87,7 @@ public class SettingsActivity extends AppCompatActivity implements GoogleApiClie
 
     private void showMessage(String message) {
         Toast.makeText(this, message, Toast.LENGTH_LONG).show();
-        Log.d(TAG, message);
+        //Log.d(TAG, message);
     }
 
     @Override
