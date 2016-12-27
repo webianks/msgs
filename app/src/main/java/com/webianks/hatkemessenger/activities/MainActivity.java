@@ -13,8 +13,8 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -26,11 +26,12 @@ import com.webianks.hatkemessenger.constants.SmsContract;
 
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener,
-        ItemCLickListener, LoaderManager.LoaderCallbacks<Cursor> {
+        ItemCLickListener, LoaderManager.LoaderCallbacks<Cursor>, SearchView.OnQueryTextListener {
 
     private RecyclerView recyclerView;
     private FloatingActionButton fab;
     private AllConversationAdapter allConversationAdapter;
+    private String TAG = MainActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,6 +118,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         SearchView searchView = (SearchView) menu.findItem(R.id.ic_search).getActionView();
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         searchView.setIconifiedByDefault(true);
+        searchView.setOnQueryTextListener(this);
+
 
         return true;
     }
@@ -172,5 +175,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         allConversationAdapter.swapCursor(null);
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        Log.d(TAG, "onQueryTextSubmit: "+query);
+        return true;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        Log.d(TAG, "onQueryTextChange: "+newText);
+        return true;
     }
 }
