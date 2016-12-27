@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -32,6 +33,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private FloatingActionButton fab;
     private AllConversationAdapter allConversationAdapter;
     private String TAG = MainActivity.class.getSimpleName();
+    private String mCurFilter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,16 +122,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         searchView.setIconifiedByDefault(true);
         searchView.setOnQueryTextListener(this);
 
-
         return true;
+
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.ic_settings:
-                startActivity(new Intent(this,SettingsActivity.class));
+                startActivity(new Intent(this, SettingsActivity.class));
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -154,11 +156,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 
+        String selection = null;
+        String[] selectionArgs = null;
+
+        if (mCurFilter != null) {
+            selection = SmsContract.SMS_SELECTION_SEARCH;
+            selectionArgs = new String[]{"%" + mCurFilter + "%", "%" + mCurFilter + "%"};
+        }
+
         return new CursorLoader(this,
                 SmsContract.ALL_SMS_URI,
                 null,
-                null,
-                null,
+                selection,
+                selectionArgs,
                 null);
     }
 
@@ -179,13 +189,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public boolean onQueryTextSubmit(String query) {
-        Log.d(TAG, "onQueryTextSubmit: "+query);
+       //Log.d(TAG, "onQueryTextSubmit: " + query);
+        mCurFilter = !TextUtils.isEmpty(query) ? query : null;
+        getSupportLoaderManager().restartLoader(Constants.ALL_SMS_LOADER, null, this);
         return true;
     }
 
     @Override
     public boolean onQueryTextChange(String newText) {
-        Log.d(TAG, "onQueryTextChange: "+newText);
+        //Log.d(TAG, "onQueryTextChange: " + newText);
+        mCurFilter = !TextUtils.isEmpty(newText) ? newText : null;
+        getSupportLoaderManager().restartLoader(Constants.ALL_SMS_LOADER, null, this);
         return true;
     }
 }
