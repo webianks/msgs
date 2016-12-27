@@ -60,7 +60,7 @@ public class AllConversationAdapter extends RecyclerView.Adapter<AllConversation
 
     @Override
     public int getItemCount() {
-        return (dataCursor == null) ? 0 : dataCursor.getCount();
+        return (dataCursor == null || dataCursor.isClosed()) ? 0 : dataCursor.getCount();
     }
 
 
@@ -88,8 +88,7 @@ public class AllConversationAdapter extends RecyclerView.Adapter<AllConversation
         @Override
         public void onClick(View view) {
             if (itemClickListener != null) {
-                dataCursor.moveToPosition(getAdapterPosition());
-                itemClickListener.itemClicked(getAdapterPosition(), dataCursor);
+                itemClickListener.itemClicked(getAdapterPosition(), senderContact.getText().toString());
             }
 
         }

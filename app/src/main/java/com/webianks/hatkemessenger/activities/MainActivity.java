@@ -144,11 +144,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     @Override
-    public void itemClicked(int position, Cursor cursor) {
-
-        String SENDER_CONTACT = cursor.getString(cursor.getColumnIndexOrThrow("address"));
+    public void itemClicked(int position, String contact) {
         Intent intent = new Intent(this, SmsDetailedView.class);
-        intent.putExtra(Constants.CONTACT_NAME, SENDER_CONTACT);
+        intent.putExtra(Constants.CONTACT_NAME, contact);
         startActivity(intent);
 
     }
@@ -189,7 +187,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public boolean onQueryTextSubmit(String query) {
-       //Log.d(TAG, "onQueryTextSubmit: " + query);
+        //Log.d(TAG, "onQueryTextSubmit: " + query);
         mCurFilter = !TextUtils.isEmpty(query) ? query : null;
         getSupportLoaderManager().restartLoader(Constants.ALL_SMS_LOADER, null, this);
         return true;
@@ -202,4 +200,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         getSupportLoaderManager().restartLoader(Constants.ALL_SMS_LOADER, null, this);
         return true;
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        getSupportLoaderManager().destroyLoader(Constants.ALL_SMS_LOADER);
+    }
+
 }
