@@ -18,8 +18,7 @@ public class DriveBackupService extends IntentService{
     @Override
     protected void onHandleIntent(Intent intent) {
 
-        SharedPreferences sp = getSharedPreferences(Constants.PREF_NAME,MODE_PRIVATE);
-        String json_sms = sp.getString(Constants.SMS_JSON,null);
+
 
     }
 

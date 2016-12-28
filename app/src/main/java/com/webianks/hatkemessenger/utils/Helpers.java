@@ -1,9 +1,13 @@
 package com.webianks.hatkemessenger.utils;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
+
+import com.webianks.hatkemessenger.constants.Constants;
+
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.security.MessageDigest;
@@ -70,6 +74,10 @@ public class Helpers {
         return str.toString();
     }
 
+    public static String getSMSJson(Context context) {
+        SharedPreferences sp = context.getSharedPreferences(Constants.PREF_NAME, Context.MODE_PRIVATE);
+        return sp.getString(Constants.SMS_JSON, null);
+    }
 
 
 }

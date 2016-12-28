@@ -1,10 +1,10 @@
 package com.webianks.hatkemessenger.activities;
 
-
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.ParcelFileDescriptor;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
@@ -18,13 +18,22 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.drive.Drive;
 import com.google.android.gms.drive.DriveApi;
+import com.google.android.gms.drive.DriveContents;
+import com.google.android.gms.drive.DriveFile;
 import com.google.android.gms.drive.DriveFolder;
 import com.google.android.gms.drive.MetadataChangeSet;
 import com.webianks.hatkemessenger.R;
 import com.webianks.hatkemessenger.constants.Constants;
+import com.webianks.hatkemessenger.utils.Helpers;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 
 public class SettingsActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
@@ -64,11 +73,13 @@ public class SettingsActivity extends AppCompatActivity implements GoogleApiClie
                     if (result.getMetadataBuffer().getCount() == 0) {
                         //now create a new file as it doesn't exist
                         createFile();
+                        return;
                     }
 
                     // mResultsAdapter.clear();
                     //  mResultsAdapter.append(result.getMetadataBuffer());
                     showMessage("Successfully listed files. " + result.getMetadataBuffer().getCount());
+
                 }
             };
 
@@ -93,8 +104,13 @@ public class SettingsActivity extends AppCompatActivity implements GoogleApiClie
                         showMessage("Error while trying to create the file "+result.getStatus());
                         return;
                     }
-                    showMessage("Created a file in App Folder: "
-                            + result.getDriveFile().getDriveId());
+
+
+                    DriveFile file = result.getDriveFile();
+                    file.open(mGoogleApiClient, DriveFile.MODE_WRITE_ONLY, null)
+                            .setResultCallback(contentsOpenedCallback);
+
+                    showMessage("Created a file in App Folder: " + result.getDriveFile().getDriveId());
                 }
             };
 
@@ -149,6 +165,8 @@ public class SettingsActivity extends AppCompatActivity implements GoogleApiClie
         //Toast.makeText(this, "Connected to drive api", Toast.LENGTH_LONG).show();
         Drive.DriveApi.newDriveContents(getGoogleApiClient())
                 .setResultCallback(driveContentsCallback);
+
+
     }
 
     @Override
@@ -211,6 +229,47 @@ public class SettingsActivity extends AppCompatActivity implements GoogleApiClie
     private void startDriveApi() {
         mGoogleApiClient.connect();
     }
+
+    ResultCallback<DriveApi.DriveContentsResult> contentsOpenedCallback =
+            new ResultCallback<DriveApi.DriveContentsResult>() {
+                @Override
+                public void onResult(DriveApi.DriveContentsResult result) {
+                    if (!result.getStatus().isSuccess()) {
+                        // display an error saying file can't be opened
+                        return;
+                    }
+                    // DriveContents object contains pointers
+                    // to the actual byte stream
+                    DriveContents contents = result.getDriveContents();
+
+                    try {
+                        ParcelFileDescriptor parcelFileDescriptor = contents.getParcelFileDescriptor();
+                        FileInputStream fileInputStream = new FileInputStream(parcelFileDescriptor
+                                .getFileDescriptor());
+                        // Read to the end of the file.
+                        fileInputStream.read(new byte[fileInputStream.available()]);
+
+                        // Append to the file.
+                        FileOutputStream fileOutputStream = new FileOutputStream(parcelFileDescriptor
+                                .getFileDescriptor());
+                        Writer writer = new OutputStreamWriter(fileOutputStream);
+                        writer.write(Helpers.getSMSJson(SettingsActivity.this));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    contents.commit(mGoogleApiClient, null).setResultCallback(new ResultCallback<Status>() {
+                        @Override
+                        public void onResult(Status result) {
+                            // Handle the response status
+
+                            if (result.isSuccess())
+                                showMessage("Successfully added sms to the JSON file.");
+                        }
+                    });
+
+                }
+            };
 
 
 }
