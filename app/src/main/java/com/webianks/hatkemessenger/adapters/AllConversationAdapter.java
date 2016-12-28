@@ -10,7 +10,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.webianks.hatkemessenger.R;
+import com.webianks.hatkemessenger.Sms;
 import com.webianks.hatkemessenger.customViews.RoundedImageView;
+
+import java.util.List;
 
 /**
  * Created by R Ankit on 25-12-2016.
@@ -19,12 +22,12 @@ import com.webianks.hatkemessenger.customViews.RoundedImageView;
 public class AllConversationAdapter extends RecyclerView.Adapter<AllConversationAdapter.MyHolder> {
 
     private Context context;
-    private Cursor dataCursor;
+    private List<Sms> data;
     private ItemCLickListener itemClickListener;
 
-    public AllConversationAdapter(Context context, Cursor dataCursor) {
+    public AllConversationAdapter(Context context, List<Sms> data) {
         this.context = context;
-        this.dataCursor = dataCursor;
+        this.data = data;
     }
 
     @Override
@@ -39,14 +42,14 @@ public class AllConversationAdapter extends RecyclerView.Adapter<AllConversation
     @Override
     public void onBindViewHolder(AllConversationAdapter.MyHolder holder, int position) {
 
-        dataCursor.moveToPosition(position);
+        Sms sms = data.get(position);
 
-        holder.senderContact.setText(dataCursor.getString(dataCursor.getColumnIndexOrThrow("address")));
-        holder.message.setText(dataCursor.getString(dataCursor.getColumnIndexOrThrow("body")));
+        holder.senderContact.setText(sms.getAddress());
+        holder.message.setText(sms.getMsg());
 
     }
 
-    public Cursor swapCursor(Cursor cursor) {
+   /* public Cursor swapCursor(Cursor cursor) {
         if (dataCursor == cursor) {
             return null;
         }
@@ -56,11 +59,11 @@ public class AllConversationAdapter extends RecyclerView.Adapter<AllConversation
             this.notifyDataSetChanged();
         }
         return oldCursor;
-    }
+    }*/
 
     @Override
     public int getItemCount() {
-        return (dataCursor == null || dataCursor.isClosed()) ? 0 : dataCursor.getCount();
+        return (data == null) ? 0 : data.size();
     }
 
 

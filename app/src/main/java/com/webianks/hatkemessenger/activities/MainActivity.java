@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.support.design.widget.FloatingActionButton;
@@ -17,19 +18,26 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
-import android.telephony.SmsManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.webianks.hatkemessenger.R;
+import com.webianks.hatkemessenger.Sms;
 import com.webianks.hatkemessenger.adapters.AllConversationAdapter;
 import com.webianks.hatkemessenger.adapters.ItemCLickListener;
 import com.webianks.hatkemessenger.constants.Constants;
 import com.webianks.hatkemessenger.constants.SmsContract;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener,
@@ -40,6 +48,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private AllConversationAdapter allConversationAdapter;
     private String TAG = MainActivity.class.getSimpleName();
     private String mCurFilter;
+    private List<Sms> data;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
 
         init();
-        setRecyclerView(null);
+
     }
 
     private void init() {
@@ -58,48 +67,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         fab.setOnClickListener(this);
     }
 
-   /* public List<Sms> getAllSms() throws Exception {
 
-        List<Sms> lstSms = new ArrayList<Sms>();
-        Sms objSms = new Sms();
-        Uri message = Uri.parse("content://sms/");
-        ContentResolver cr = getContentResolver();
-
-        Cursor c = cr.query(message, null, null, null, null);
-        startManagingCursor(c);
-        int totalSMS = c.getCount();
-
-        if (c.moveToFirst()) {
-            for (int i = 0; i < totalSMS; i++) {
-
-                objSms = new Sms();
-                objSms.setId(c.getString(c.getColumnIndexOrThrow("_id")));
-                objSms.setAddress(c.getString(c
-                        .getColumnIndexOrThrow("address")));
-                objSms.setMsg(c.getString(c.getColumnIndexOrThrow("body")));
-                objSms.setReadState(c.getString(c.getColumnIndex("read")));
-                objSms.setTime(c.getString(c.getColumnIndexOrThrow("date")));
-                if (c.getString(c.getColumnIndexOrThrow("type")).contains("1")) {
-                    objSms.setFolderName("inbox");
-                } else {
-                    objSms.setFolderName("sent");
-                }
-
-                lstSms.add(objSms);
-                c.moveToNext();
-            }
-        } else {
-            //no SMS to show
-        }
-        c.close();
-
-
-
-        return lstSms;
-    }*/
-
-    private void setRecyclerView(Cursor cursor) {
-        allConversationAdapter = new AllConversationAdapter(this, cursor);
+    private void setRecyclerView(List<Sms> data) {
+        allConversationAdapter = new AllConversationAdapter(this, data);
         allConversationAdapter.setItemClickListener(this);
         recyclerView.setAdapter(allConversationAdapter);
     }
@@ -213,7 +183,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
 
         if (cursor != null && cursor.getCount() > 0) {
-            allConversationAdapter.swapCursor(cursor);
+
+            //allConversationAdapter.swapCursor(cursor);
+            getAllSmsToFile(cursor);
+
         } else {
             //no sms
         }
@@ -221,7 +194,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        allConversationAdapter.swapCursor(null);
+
+        data = null;
+        allConversationAdapter.notifyDataSetChanged();
+
+        //allConversationAdapter.swapCursor(null);
     }
 
     @Override
@@ -245,5 +222,63 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onPause();
         getSupportLoaderManager().destroyLoader(Constants.ALL_SMS_LOADER);
     }
+
+
+    public void getAllSmsToFile(Cursor c) {
+
+        List<Sms> lstSms = new ArrayList<Sms>();
+        Sms objSms = null;
+        int totalSMS = c.getCount();
+
+        if (c.moveToFirst()) {
+            for (int i = 0; i < totalSMS; i++) {
+
+                try {
+                    objSms = new Sms();
+                    objSms.setId(c.getString(c.getColumnIndexOrThrow("_id")));
+                    objSms.setAddress(c.getString(c
+                            .getColumnIndexOrThrow("address")));
+                    objSms.setMsg(c.getString(c.getColumnIndexOrThrow("body")));
+                    objSms.setReadState(c.getString(c.getColumnIndex("read")));
+                    objSms.setTime(c.getString(c.getColumnIndexOrThrow("date")));
+                    if (c.getString(c.getColumnIndexOrThrow("type")).contains("1")) {
+                        objSms.setFolderName("inbox");
+                    } else {
+                        objSms.setFolderName("sent");
+                    }
+
+                } catch (Exception e) {
+
+                } finally {
+                    lstSms.add(objSms);
+                    c.moveToNext();
+                }
+            }
+        }
+        c.close();
+
+        data = lstSms;
+        setRecyclerView(data);
+
+        convertToJson(lstSms);
+
+    }
+
+    private void convertToJson(List<Sms> lstSms) {
+
+        Type listType = new TypeToken<List<Sms>>() {
+        }.getType();
+        Gson gson = new Gson();
+        String json = gson.toJson(lstSms, listType);
+
+        SharedPreferences sp = getSharedPreferences(Constants.PREF_NAME,MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putString(Constants.SMS_JSON,json);
+        editor.apply();
+        //List<String> target2 = gson.fromJson(json, listType);
+        //Log.d(TAG, json);
+
+    }
+
 
 }
