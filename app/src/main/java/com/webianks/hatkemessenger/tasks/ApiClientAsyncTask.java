@@ -1,4 +1,4 @@
-package com.webianks.hatkemessenger.activities;
+package com.webianks.hatkemessenger.tasks;
 
 // Copyright 2013 Google Inc. All Rights Reserved.
 

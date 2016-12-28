@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.ParcelFileDescriptor;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
@@ -20,7 +19,6 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Status;
 import com.google.android.gms.drive.Drive;
 import com.google.android.gms.drive.DriveApi;
 import com.google.android.gms.drive.DriveContents;
@@ -30,15 +28,13 @@ import com.google.android.gms.drive.DriveId;
 import com.google.android.gms.drive.MetadataChangeSet;
 import com.webianks.hatkemessenger.R;
 import com.webianks.hatkemessenger.constants.Constants;
-import com.webianks.hatkemessenger.utils.Helpers;
+import com.webianks.hatkemessenger.tasks.EditContentsAsyncTask;
+import com.webianks.hatkemessenger.tasks.ApiClientAsyncTask;
+import com.webianks.hatkemessenger.tasks.RetrieveDriveFileContentsAsyncTask;
+
 import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
 
 public class SettingsActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
@@ -46,7 +42,6 @@ public class SettingsActivity extends AppCompatActivity implements GoogleApiClie
 
     private GoogleApiClient mGoogleApiClient;
     private final int RESOLVE_CONNECTION_REQUEST_CODE = 111;
-    private String TAG = SettingsActivity.class.getSimpleName();
     private DriveApi.DriveContentsResult driveContentsResult;
 
     final private ResultCallback<DriveApi.DriveContentsResult> driveContentsCallback =
@@ -119,16 +114,13 @@ public class SettingsActivity extends AppCompatActivity implements GoogleApiClie
 
                     DriveFile file = result.getDriveFile();
 
-                    /*  file.open(mGoogleApiClient, DriveFile.MODE_WRITE_ONLY, null)
-                            .setResultCallback(contentsOpenedCallback);*/
-
                     new EditContentsAsyncTask(SettingsActivity.this).execute(file);
                     showMessage("Created a file in App Folder: " + result.getDriveFile().getDriveId());
 
                 }
             };
 
-    private void showMessage(String message) {
+    public void showMessage(String message) {
         Toast.makeText(this, message, Toast.LENGTH_LONG).show();
         //Log.d(TAG, message);
     }
@@ -243,132 +235,5 @@ public class SettingsActivity extends AppCompatActivity implements GoogleApiClie
     private void startDriveApi() {
         mGoogleApiClient.connect();
     }
-
-  /*  ResultCallback<DriveApi.DriveContentsResult> contentsOpenedCallback =
-            new ResultCallback<DriveApi.DriveContentsResult>() {
-                @Override
-                public void onResult(DriveApi.DriveContentsResult result) {
-                    if (!result.getStatus().isSuccess()) {
-                        // display an error saying file can't be opened
-                        return;
-                    }
-                    // DriveContents object contains pointers
-                    // to the actual byte stream
-                    DriveContents contents = result.getDriveContents();
-
-                    try {
-                        ParcelFileDescriptor parcelFileDescriptor = contents.getParcelFileDescriptor();
-                        FileInputStream fileInputStream = new FileInputStream(parcelFileDescriptor
-                                .getFileDescriptor());
-                        // Read to the end of the file.
-                        fileInputStream.read(new byte[fileInputStream.available()]);
-
-                        // Append to the file.
-                        FileOutputStream fileOutputStream = new FileOutputStream(parcelFileDescriptor
-                                .getFileDescriptor());
-                        Writer writer = new OutputStreamWriter(fileOutputStream);
-                        writer.write(Helpers.getSMSJson(SettingsActivity.this));
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-
-                    contents.commit(mGoogleApiClient, null).setResultCallback(new ResultCallback<Status>() {
-                        @Override
-                        public void onResult(Status result) {
-                            // Handle the response status
-
-                            if (result.isSuccess())
-                                showMessage("Successfully added sms to the JSON file.");
-                        }
-                    });
-
-                }
-            };*/
-
-
-
-    final private class RetrieveDriveFileContentsAsyncTask
-            extends ApiClientAsyncTask<DriveId, Boolean, String> {
-
-        public RetrieveDriveFileContentsAsyncTask(Context context) {
-            super(context);
-        }
-
-        @Override
-        protected String doInBackgroundConnected(DriveId... params) {
-            String contents = null;
-            DriveFile file = params[0].asDriveFile();
-            DriveApi.DriveContentsResult driveContentsResult =
-                    file.open(getGoogleApiClient(), DriveFile.MODE_READ_ONLY, null).await();
-            if (!driveContentsResult.getStatus().isSuccess()) {
-                return null;
-            }
-            DriveContents driveContents = driveContentsResult.getDriveContents();
-            BufferedReader reader = new BufferedReader(
-                    new InputStreamReader(driveContents.getInputStream()));
-            StringBuilder builder = new StringBuilder();
-            String line;
-            try {
-                while ((line = reader.readLine()) != null) {
-                    builder.append(line);
-                }
-                contents = builder.toString();
-            } catch (IOException e) {
-                Log.e(TAG, "IOException while reading from the stream", e);
-            }
-
-            driveContents.discard(getGoogleApiClient());
-            return contents;
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
-            if (result == null) {
-                showMessage("Error while reading from the file");
-                return;
-            }
-            //showMessage("File contents: " + result);
-            //Log.d(TAG,result);
-        }
-    }
-
-    public class EditContentsAsyncTask extends ApiClientAsyncTask<DriveFile, Void, Boolean> {
-
-        public EditContentsAsyncTask(Context context) {
-            super(context);
-        }
-
-        @Override
-        protected Boolean doInBackgroundConnected(DriveFile... args) {
-            DriveFile file = args[0];
-            try {
-                DriveApi.DriveContentsResult driveContentsResult = file.open(
-                        getGoogleApiClient(), DriveFile.MODE_WRITE_ONLY, null).await();
-                if (!driveContentsResult.getStatus().isSuccess()) {
-                    return false;
-                }
-                DriveContents driveContents = driveContentsResult.getDriveContents();
-                OutputStream outputStream = driveContents.getOutputStream();
-                outputStream.write(Helpers.getSMSJson(SettingsActivity.this).getBytes());
-                com.google.android.gms.common.api.Status status =
-                        driveContents.commit(getGoogleApiClient(), null).await();
-                return status.getStatus().isSuccess();
-            } catch (IOException e) {
-                Log.e(TAG, "IOException while appending to the output stream", e);
-            }
-            return false;
-        }
-
-        @Override
-        protected void onPostExecute(Boolean result) {
-            if (!result) {
-                showMessage("Error while editing contents");
-                return;
-            }
-            showMessage("Successfully edited contents");
-        }
-    }
-
 
 }
