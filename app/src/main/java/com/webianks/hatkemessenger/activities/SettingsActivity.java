@@ -36,6 +36,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 
@@ -117,10 +118,13 @@ public class SettingsActivity extends AppCompatActivity implements GoogleApiClie
 
 
                     DriveFile file = result.getDriveFile();
-                    file.open(mGoogleApiClient, DriveFile.MODE_WRITE_ONLY, null)
-                            .setResultCallback(contentsOpenedCallback);
 
+                    /*  file.open(mGoogleApiClient, DriveFile.MODE_WRITE_ONLY, null)
+                            .setResultCallback(contentsOpenedCallback);*/
+
+                    new EditContentsAsyncTask(SettingsActivity.this).execute(file);
                     showMessage("Created a file in App Folder: " + result.getDriveFile().getDriveId());
+
                 }
             };
 
@@ -240,7 +244,7 @@ public class SettingsActivity extends AppCompatActivity implements GoogleApiClie
         mGoogleApiClient.connect();
     }
 
-    ResultCallback<DriveApi.DriveContentsResult> contentsOpenedCallback =
+  /*  ResultCallback<DriveApi.DriveContentsResult> contentsOpenedCallback =
             new ResultCallback<DriveApi.DriveContentsResult>() {
                 @Override
                 public void onResult(DriveApi.DriveContentsResult result) {
@@ -279,7 +283,9 @@ public class SettingsActivity extends AppCompatActivity implements GoogleApiClie
                     });
 
                 }
-            };
+            };*/
+
+
 
     final private class RetrieveDriveFileContentsAsyncTask
             extends ApiClientAsyncTask<DriveId, Boolean, String> {
@@ -324,6 +330,43 @@ public class SettingsActivity extends AppCompatActivity implements GoogleApiClie
             }
             //showMessage("File contents: " + result);
             //Log.d(TAG,result);
+        }
+    }
+
+    public class EditContentsAsyncTask extends ApiClientAsyncTask<DriveFile, Void, Boolean> {
+
+        public EditContentsAsyncTask(Context context) {
+            super(context);
+        }
+
+        @Override
+        protected Boolean doInBackgroundConnected(DriveFile... args) {
+            DriveFile file = args[0];
+            try {
+                DriveApi.DriveContentsResult driveContentsResult = file.open(
+                        getGoogleApiClient(), DriveFile.MODE_WRITE_ONLY, null).await();
+                if (!driveContentsResult.getStatus().isSuccess()) {
+                    return false;
+                }
+                DriveContents driveContents = driveContentsResult.getDriveContents();
+                OutputStream outputStream = driveContents.getOutputStream();
+                outputStream.write(Helpers.getSMSJson(SettingsActivity.this).getBytes());
+                com.google.android.gms.common.api.Status status =
+                        driveContents.commit(getGoogleApiClient(), null).await();
+                return status.getStatus().isSuccess();
+            } catch (IOException e) {
+                Log.e(TAG, "IOException while appending to the output stream", e);
+            }
+            return false;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            if (!result) {
+                showMessage("Error while editing contents");
+                return;
+            }
+            showMessage("Successfully edited contents");
         }
     }
 
