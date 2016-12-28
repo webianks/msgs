@@ -4,6 +4,7 @@ package com.webianks.hatkemessenger.activities;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
@@ -12,6 +13,7 @@ import android.preference.SwitchPreference;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.telephony.SmsManager;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -34,6 +36,7 @@ public class SettingsActivity extends AppCompatActivity implements GoogleApiClie
     private GoogleApiClient mGoogleApiClient;
     private final int RESOLVE_CONNECTION_REQUEST_CODE = 111;
     private String TAG = SettingsActivity.class.getSimpleName();
+    private DriveApi.DriveContentsResult driveContentsResult;
 
     final private ResultCallback<DriveApi.DriveContentsResult> driveContentsCallback =
             new ResultCallback<DriveApi.DriveContentsResult>() {
@@ -44,15 +47,10 @@ public class SettingsActivity extends AppCompatActivity implements GoogleApiClie
                         return;
                     }
 
-                    MetadataChangeSet changeSet = new MetadataChangeSet.Builder()
-                            .setTitle("appconfig.txt")
-                            .setMimeType("text/plain")
-                            .build();
-                    Drive.DriveApi.getAppFolder(getGoogleApiClient())
-                            .createFile(getGoogleApiClient(), changeSet, result.getDriveContents())
-                            .setResultCallback(fileCallback);
-
+                    driveContentsResult = result;
+                    //first try to get the file if exists already
                     Drive.DriveApi.getAppFolder(getGoogleApiClient()).listChildren(mGoogleApiClient).setResultCallback(metadataCallback);
+
                 }
             };
 
@@ -65,11 +63,29 @@ public class SettingsActivity extends AppCompatActivity implements GoogleApiClie
                         showMessage("Problem while retrieving files");
                         return;
                     }
-                   // mResultsAdapter.clear();
-                  //  mResultsAdapter.append(result.getMetadataBuffer());
-                    showMessage("Successfully listed files. "+result.getMetadataBuffer().getCount());
+
+                    if (result.getMetadataBuffer().getCount() == 0) {
+                        //now create a new file as it doesn't exist
+                        getCreateFile();
+                    }
+
+                    // mResultsAdapter.clear();
+                    //  mResultsAdapter.append(result.getMetadataBuffer());
+                    showMessage("Successfully listed files. " + result.getMetadataBuffer().getCount());
                 }
             };
+
+    private void getCreateFile() {
+
+        MetadataChangeSet changeSet = new MetadataChangeSet.Builder()
+                .setTitle("appconfig.txt")
+                .setMimeType("text/plain")
+                .build();
+
+        Drive.DriveApi.getAppFolder(getGoogleApiClient())
+                .createFile(getGoogleApiClient(), changeSet, driveContentsResult.getDriveContents())
+                .setResultCallback(fileCallback);
+    }
 
 
     final private ResultCallback<DriveFolder.DriveFileResult> fileCallback = new
@@ -77,7 +93,7 @@ public class SettingsActivity extends AppCompatActivity implements GoogleApiClie
                 @Override
                 public void onResult(DriveFolder.DriveFileResult result) {
                     if (!result.getStatus().isSuccess()) {
-                        showMessage("Error while trying to create the file");
+                        showMessage("Error while trying to create the file "+result.getStatus());
                         return;
                     }
                     showMessage("Created a file in App Folder: "
@@ -133,7 +149,7 @@ public class SettingsActivity extends AppCompatActivity implements GoogleApiClie
     @Override
     public void onConnected(@Nullable Bundle bundle) {
 
-        Toast.makeText(this, "Connected to drive api", Toast.LENGTH_LONG).show();
+        //Toast.makeText(this, "Connected to drive api", Toast.LENGTH_LONG).show();
         Drive.DriveApi.newDriveContents(getGoogleApiClient())
                 .setResultCallback(driveContentsCallback);
     }

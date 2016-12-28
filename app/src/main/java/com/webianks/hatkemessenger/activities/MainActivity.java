@@ -1,11 +1,15 @@
 package com.webianks.hatkemessenger.activities;
 
+import android.Manifest;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.LoaderManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
@@ -13,11 +17,13 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.telephony.SmsManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.webianks.hatkemessenger.R;
 import com.webianks.hatkemessenger.adapters.AllConversationAdapter;
@@ -140,8 +146,41 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onResume() {
         super.onResume();
-        getSupportLoaderManager().initLoader(Constants.ALL_SMS_LOADER, null, this);
+
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.READ_SMS)
+                != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.READ_SMS)) {
+            } else {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.READ_SMS},
+                        Constants.MY_PERMISSIONS_REQUEST_READ_SMS);
+            }
+        } else
+            getSupportLoaderManager().initLoader(Constants.ALL_SMS_LOADER, null, this);
+
     }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case Constants.MY_PERMISSIONS_REQUEST_READ_SMS: {
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    getSupportLoaderManager().initLoader(Constants.ALL_SMS_LOADER, null, this);
+
+                } else {
+                    Toast.makeText(getApplicationContext(),
+                            "Can't access messages.", Toast.LENGTH_LONG).show();
+                    return;
+                }
+            }
+        }
+    }
+
 
     @Override
     public void itemClicked(int position, String contact) {
