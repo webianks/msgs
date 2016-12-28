@@ -63,7 +63,7 @@ public class SettingsActivity extends AppCompatActivity implements GoogleApiClie
 
                     if (result.getMetadataBuffer().getCount() == 0) {
                         //now create a new file as it doesn't exist
-                        getCreateFile();
+                        createFile();
                     }
 
                     // mResultsAdapter.clear();
@@ -72,11 +72,11 @@ public class SettingsActivity extends AppCompatActivity implements GoogleApiClie
                 }
             };
 
-    private void getCreateFile() {
+    private void createFile() {
 
         MetadataChangeSet changeSet = new MetadataChangeSet.Builder()
-                .setTitle("appconfig.txt")
-                .setMimeType("text/plain")
+                .setTitle("all_sms.json")
+                .setMimeType("application/json")
                 .build();
 
         Drive.DriveApi.getAppFolder(getGoogleApiClient())
