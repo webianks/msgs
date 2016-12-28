@@ -1,5 +1,6 @@
 package com.webianks.hatkemessenger.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.SharedPreferences;
@@ -12,6 +13,7 @@ import android.preference.SwitchPreference;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 import com.google.android.gms.common.ConnectionResult;
@@ -24,14 +26,16 @@ import com.google.android.gms.drive.DriveApi;
 import com.google.android.gms.drive.DriveContents;
 import com.google.android.gms.drive.DriveFile;
 import com.google.android.gms.drive.DriveFolder;
+import com.google.android.gms.drive.DriveId;
 import com.google.android.gms.drive.MetadataChangeSet;
 import com.webianks.hatkemessenger.R;
 import com.webianks.hatkemessenger.constants.Constants;
 import com.webianks.hatkemessenger.utils.Helpers;
-
+import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 
@@ -78,6 +82,12 @@ public class SettingsActivity extends AppCompatActivity implements GoogleApiClie
 
                     // mResultsAdapter.clear();
                     //  mResultsAdapter.append(result.getMetadataBuffer());
+
+                    DriveId driveId = result.getMetadataBuffer().get(0).getDriveId();
+
+                    new RetrieveDriveFileContentsAsyncTask(
+                            SettingsActivity.this).execute(driveId);
+
                     showMessage("Successfully listed files. " + result.getMetadataBuffer().getCount());
 
                 }
@@ -270,6 +280,52 @@ public class SettingsActivity extends AppCompatActivity implements GoogleApiClie
 
                 }
             };
+
+    final private class RetrieveDriveFileContentsAsyncTask
+            extends ApiClientAsyncTask<DriveId, Boolean, String> {
+
+        public RetrieveDriveFileContentsAsyncTask(Context context) {
+            super(context);
+        }
+
+        @Override
+        protected String doInBackgroundConnected(DriveId... params) {
+            String contents = null;
+            DriveFile file = params[0].asDriveFile();
+            DriveApi.DriveContentsResult driveContentsResult =
+                    file.open(getGoogleApiClient(), DriveFile.MODE_READ_ONLY, null).await();
+            if (!driveContentsResult.getStatus().isSuccess()) {
+                return null;
+            }
+            DriveContents driveContents = driveContentsResult.getDriveContents();
+            BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(driveContents.getInputStream()));
+            StringBuilder builder = new StringBuilder();
+            String line;
+            try {
+                while ((line = reader.readLine()) != null) {
+                    builder.append(line);
+                }
+                contents = builder.toString();
+            } catch (IOException e) {
+                Log.e(TAG, "IOException while reading from the stream", e);
+            }
+
+            driveContents.discard(getGoogleApiClient());
+            return contents;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            if (result == null) {
+                showMessage("Error while reading from the file");
+                return;
+            }
+            //showMessage("File contents: " + result);
+            //Log.d(TAG,result);
+        }
+    }
 
 
 }
