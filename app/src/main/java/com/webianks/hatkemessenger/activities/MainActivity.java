@@ -10,7 +10,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.provider.Telephony;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
@@ -55,7 +54,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private String mCurFilter;
     private List<SMS> data;
     private LinearLayoutManager linearLayoutManager;
-    private Parcelable listState;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

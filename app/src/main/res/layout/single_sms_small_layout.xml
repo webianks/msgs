@@ -7,10 +7,10 @@
     android:clickable="true"
     android:orientation="vertical">
 
-    <com.webianks.hatkemessenger.customViews.RoundedImageView
+    <ImageView
         android:id="@+id/smsImage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="42dp"
+        android:layout_height="42dp"
         android:layout_margin="@dimen/margin_imageview"
         android:src="@drawable/ic_account_circle_black_36dp" />
 
@@ -23,7 +23,6 @@
         android:layout_toRightOf="@id/smsImage"
         android:text="@string/title"
         android:textAllCaps="true"
-        android:textSize="@dimen/previewMessageSize"
         android:textColor="@color/colorPrimaryText" />
 
     <TextView

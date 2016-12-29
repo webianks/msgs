@@ -11,12 +11,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.amulyakhare.textdrawable.TextDrawable;
 import com.webianks.hatkemessenger.R;
 import com.webianks.hatkemessenger.SMS;
-import com.webianks.hatkemessenger.customViews.RoundedImageView;
+import com.webianks.hatkemessenger.utils.ColorGeneratorModified;
 
 import java.util.List;
 
@@ -29,10 +31,12 @@ public class AllConversationAdapter extends RecyclerView.Adapter<AllConversation
     private Context context;
     private List<SMS> data;
     private ItemCLickListener itemClickListener;
+    ColorGeneratorModified generator = ColorGeneratorModified.MATERIAL;
 
     public AllConversationAdapter(Context context, List<SMS> data) {
         this.context = context;
         this.data = data;
+
     }
 
     @Override
@@ -51,6 +55,12 @@ public class AllConversationAdapter extends RecyclerView.Adapter<AllConversation
 
         holder.senderContact.setText(SMS.getAddress());
         holder.message.setText(SMS.getMsg());
+
+        int color = generator.getColor(SMS.getAddress());
+        String firstChar = String.valueOf(SMS.getAddress().charAt(0));
+        TextDrawable drawable = TextDrawable.builder().buildRound(firstChar, color);
+        holder.senderImage.setImageDrawable(drawable);
+
 
         if (SMS.getReadState().equals("0")) {
             holder.senderContact.setTypeface(holder.senderContact.getTypeface(), Typeface.BOLD);
@@ -76,14 +86,14 @@ public class AllConversationAdapter extends RecyclerView.Adapter<AllConversation
 
     public class MyHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
 
-        private RoundedImageView senderImage;
+        private ImageView senderImage;
         private TextView senderContact;
         private TextView message;
         private RelativeLayout mainLayout;
 
         public MyHolder(View itemView) {
             super(itemView);
-            senderImage = (RoundedImageView) itemView.findViewById(R.id.smsImage);
+            senderImage = (ImageView) itemView.findViewById(R.id.smsImage);
             senderContact = (TextView) itemView.findViewById(R.id.smsSender);
             message = (TextView) itemView.findViewById(R.id.smsContent);
             mainLayout = (RelativeLayout) itemView.findViewById(R.id.small_layout_main);
