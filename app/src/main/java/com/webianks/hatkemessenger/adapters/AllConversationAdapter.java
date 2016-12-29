@@ -1,13 +1,16 @@
 package com.webianks.hatkemessenger.adapters;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -49,8 +52,6 @@ public class AllConversationAdapter extends RecyclerView.Adapter<AllConversation
         holder.senderContact.setText(SMS.getAddress());
         holder.message.setText(SMS.getMsg());
 
-        //Log.d("webi",SMS.getAddress() +" "+SMS.getReadState());
-
         if (SMS.getReadState().equals("0")) {
             holder.senderContact.setTypeface(holder.senderContact.getTypeface(), Typeface.BOLD);
             holder.message.setTypeface(holder.message.getTypeface(), Typeface.BOLD);
@@ -58,23 +59,10 @@ public class AllConversationAdapter extends RecyclerView.Adapter<AllConversation
         } else {
             holder.senderContact.setTypeface(null, Typeface.NORMAL);
             holder.message.setTypeface(null, Typeface.NORMAL);
-            //holder.message.setTextColor(ContextCompat.getColor(context,R.color.colorSecondaryText));
         }
-
 
     }
 
-   /* public Cursor swapCursor(Cursor cursor) {
-        if (dataCursor == cursor) {
-            return null;
-        }
-        Cursor oldCursor = dataCursor;
-        this.dataCursor = cursor;
-        if (cursor != null) {
-            this.notifyDataSetChanged();
-        }
-        return oldCursor;
-    }*/
 
     @Override
     public int getItemCount() {
@@ -86,7 +74,7 @@ public class AllConversationAdapter extends RecyclerView.Adapter<AllConversation
         this.itemClickListener = itemClickListener;
     }
 
-    public class MyHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class MyHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
 
         private RoundedImageView senderImage;
         private TextView senderContact;
@@ -101,6 +89,7 @@ public class AllConversationAdapter extends RecyclerView.Adapter<AllConversation
             mainLayout = (RelativeLayout) itemView.findViewById(R.id.small_layout_main);
 
             mainLayout.setOnClickListener(this);
+            mainLayout.setOnLongClickListener(this);
         }
 
         @Override
@@ -115,5 +104,64 @@ public class AllConversationAdapter extends RecyclerView.Adapter<AllConversation
             }
 
         }
+
+        @Override
+        public boolean onLongClick(View view) {
+
+            String[] items = {"Delete"};
+
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(context
+                    , android.R.layout.simple_list_item_1, android.R.id.text1, items);
+
+            new AlertDialog.Builder(context)
+                    .setAdapter(adapter, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.dismiss();
+                            deleteDialog();
+                        }
+                    })
+                    .show();
+
+            return true;
+        }
+
+        private void deleteDialog() {
+
+            AlertDialog.Builder alert = new AlertDialog.Builder(context);
+            alert.setMessage("Are you sure you want to delete this message?");
+            alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+                    deleteSMS(data.get(getAdapterPosition()).getId(), getAdapterPosition());
+
+                }
+
+            });
+            alert.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+                    dialog.dismiss();
+                }
+            });
+            alert.create();
+            alert.show();
+        }
+    }
+
+    public void deleteSMS(long messageId, int position) {
+
+        long affected = context.getContentResolver().delete(
+                Uri.parse("content://sms/" + messageId), null, null);
+
+        if (affected != 0) {
+
+            data.remove(position);
+            notifyItemRemoved(position);
+
+        }
+
     }
 }
