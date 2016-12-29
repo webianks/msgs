@@ -106,6 +106,10 @@ public class AllConversationAdapter extends RecyclerView.Adapter<AllConversation
         @Override
         public void onClick(View view) {
             if (itemClickListener != null) {
+
+                data.get(getAdapterPosition()).setReadState("1");
+                notifyItemChanged(getAdapterPosition());
+
                 itemClickListener.itemClicked(getAdapterPosition(), senderContact.getText().toString(),
                         data.get(getAdapterPosition()).getId());
             }
