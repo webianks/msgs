@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="@dimen/type_box_height"
-        android:background="@color/conv_backgroung" />
+        android:background="@color/white" />
 
     <RelativeLayout
         android:layout_gravity="bottom"
@@ -32,6 +32,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal"
+            android:background="@color/white"
             android:weightSum="2">
 
             <EditText
@@ -51,7 +52,7 @@
                 android:layout_width="0dp"
                 android:background="@drawable/main_background"
                 android:layout_gravity="center"
-                android:src="@drawable/ic_action_content_send"
+                android:src="@drawable/ic_action_sent_mail"
                 android:padding="10dp"
                 android:layout_height="match_parent" />
 

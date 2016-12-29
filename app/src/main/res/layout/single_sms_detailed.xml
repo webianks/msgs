@@ -3,12 +3,14 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/activity_horizontal_margin"
+    android:background="@color/white"
     android:orientation="vertical">
 
     <com.webianks.hatkemessenger.customViews.RoundedImageView
         android:id="@+id/senderImage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
         android:src="@drawable/ic_account_circle_black_36dp" />
 
     <TextView
@@ -22,7 +24,7 @@
         android:padding="@dimen/activity_horizontal_margin"
         android:text="@string/content_small"
         android:background="@drawable/rounded_background"
-        android:textColor="@color/white"
+        android:textColor="@color/colorPrimaryText"
         />
 
 

@@ -5,9 +5,10 @@
     <color name="colorAccent">#ff3f80</color>
     <color name="colorPrimaryText">#212121</color>
     <color name="white">#ffffff</color>
-    <color name="dark">#0391fd</color>
+    <color name="dark">#f5f5f5</color>
     <color name="conv_backgroung">#eeeeee</color>
     <color name="strip_color">#dddddd</color>
     <color name="black">#212121</color>
     <color name="colorSecondaryText">#757575</color>
+    <color name="dark_two">#eeeeee</color>
 </resources>
