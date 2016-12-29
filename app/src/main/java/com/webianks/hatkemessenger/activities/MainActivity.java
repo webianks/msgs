@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.os.Parcelable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.LoaderManager;
@@ -19,7 +20,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -36,14 +36,9 @@ import com.webianks.hatkemessenger.constants.SmsContract;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
-import java.util.Set;
 
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener,
@@ -55,6 +50,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private String TAG = MainActivity.class.getSimpleName();
     private String mCurFilter;
     private List<SMS> data;
+    private LinearLayoutManager linearLayoutManager;
+    private Parcelable listState;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,11 +63,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void init() {
+
         recyclerView = (RecyclerView) findViewById(R.id.recyclerview);
         fab = (FloatingActionButton) findViewById(R.id.fab_new);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
         fab.setOnClickListener(this);
+
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.READ_SMS)
+                != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.READ_SMS)) {
+            } else {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.READ_SMS},
+                        Constants.MY_PERMISSIONS_REQUEST_READ_SMS);
+            }
+        } else
+            getSupportLoaderManager().initLoader(Constants.ALL_SMS_LOADER, null, this);
+
     }
 
 
@@ -123,18 +135,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onResume() {
         super.onResume();
 
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.READ_SMS)
-                != PackageManager.PERMISSION_GRANTED) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                    Manifest.permission.READ_SMS)) {
-            } else {
-                ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.READ_SMS},
-                        Constants.MY_PERMISSIONS_REQUEST_READ_SMS);
-            }
-        } else
-            getSupportLoaderManager().initLoader(Constants.ALL_SMS_LOADER, null, this);
+        if (listState != null) {
+            linearLayoutManager.onRestoreInstanceState(listState);
+        }
 
     }
 
@@ -302,20 +305,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
-    private void removeTheDuplicates(List<SMS> myList) {
-
-        for (ListIterator<SMS> iterator = myList.listIterator(); iterator.hasNext(); ) {
-
-            SMS sms = iterator.next();
-
-            if (Collections.frequency(myList, sms) > 1) {
-                iterator.remove();
-            }
-
-        }
-        System.out.println(myList.toString());
-
+    protected void onSaveInstanceState(Bundle state) {
+        super.onSaveInstanceState(state);
+        if (linearLayoutManager != null)
+            state.putParcelable(Constants.LIST_STATE_KEY, linearLayoutManager.onSaveInstanceState());
     }
 
+    protected void onRestoreInstanceState(Bundle state) {
+        super.onRestoreInstanceState(state);
+        listState = state.getParcelable(Constants.LIST_STATE_KEY);
+    }
 
 }

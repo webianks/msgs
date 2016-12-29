@@ -15,4 +15,5 @@ public class Constants {
     public static final int MY_PERMISSIONS_REQUEST_READ_SMS = 1;
     public static final String PREF_NAME = "sms_pref";
     public static final String SMS_JSON = "sms_json";
+    public static final String LIST_STATE_KEY = "list_state";
 }
