@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Typeface;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,14 +49,15 @@ public class AllConversationAdapter extends RecyclerView.Adapter<AllConversation
         holder.senderContact.setText(SMS.getAddress());
         holder.message.setText(SMS.getMsg());
 
+        //Log.d("webi",SMS.getAddress() +" "+SMS.getReadState());
 
-        if (SMS.getReadState().equals("0")){
+        if (SMS.getReadState().equals("0")) {
             holder.senderContact.setTypeface(holder.senderContact.getTypeface(), Typeface.BOLD);
-            holder.message.setTypeface(holder.message.getTypeface(),Typeface.BOLD);
-            holder.message.setTextColor(ContextCompat.getColor(context,R.color.black));
-        }else{
-            holder.senderContact.setTypeface(holder.senderContact.getTypeface(), Typeface.NORMAL);
-            holder.message.setTypeface(holder.message.getTypeface(),Typeface.NORMAL);
+            holder.message.setTypeface(holder.message.getTypeface(), Typeface.BOLD);
+            holder.message.setTextColor(ContextCompat.getColor(context, R.color.black));
+        } else {
+            holder.senderContact.setTypeface(null, Typeface.NORMAL);
+            holder.message.setTypeface(null, Typeface.NORMAL);
             //holder.message.setTextColor(ContextCompat.getColor(context,R.color.colorSecondaryText));
         }
 
@@ -104,7 +106,8 @@ public class AllConversationAdapter extends RecyclerView.Adapter<AllConversation
         @Override
         public void onClick(View view) {
             if (itemClickListener != null) {
-                itemClickListener.itemClicked(getAdapterPosition(), senderContact.getText().toString());
+                itemClickListener.itemClicked(getAdapterPosition(), senderContact.getText().toString(),
+                        data.get(getAdapterPosition()).getId());
             }
 
         }

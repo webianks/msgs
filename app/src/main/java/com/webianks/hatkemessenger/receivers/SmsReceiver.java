@@ -51,7 +51,7 @@ public class SmsReceiver extends BroadcastReceiver {
                         //Log.d(TAG, "senderNum: " + senderNo + " :\n message: " + message);
 
                         issueNotification(context, senderNo, message);
-                        saveSmsInInbox(context, senderNo, message);
+                        saveSmsInInbox(context,currentSMS);
 
                     }
                     this.abortBroadcast();
@@ -61,11 +61,12 @@ public class SmsReceiver extends BroadcastReceiver {
         } // bundle null
     }
 
-    private void saveSmsInInbox(Context context, String senderNo, String message) {
+    private void saveSmsInInbox(Context context, SmsMessage sms) {
 
         Intent serviceIntent = new Intent(context, SaveSmsService.class);
-        serviceIntent.putExtra("sender_no", senderNo);
-        serviceIntent.putExtra("message", message);
+        serviceIntent.putExtra("sender_no", sms.getDisplayOriginatingAddress());
+        serviceIntent.putExtra("message", sms.getDisplayMessageBody());
+        serviceIntent.putExtra("date", sms.getTimestampMillis());
         context.startService(serviceIntent);
 
     }

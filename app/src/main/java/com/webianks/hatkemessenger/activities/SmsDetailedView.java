@@ -24,6 +24,7 @@ import com.webianks.hatkemessenger.R;
 import com.webianks.hatkemessenger.adapters.SingleGroupAdapter;
 import com.webianks.hatkemessenger.constants.Constants;
 import com.webianks.hatkemessenger.constants.SmsContract;
+import com.webianks.hatkemessenger.services.UpdateSMSService;
 
 public class SmsDetailedView extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<Cursor>, View.OnClickListener {
@@ -35,6 +36,7 @@ public class SmsDetailedView extends AppCompatActivity implements
     private ImageView btSend;
     private String message;
     private boolean from_reciever;
+    private String _Id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +51,11 @@ public class SmsDetailedView extends AppCompatActivity implements
     private void init() {
 
         Intent intent = getIntent();
+
+
         contact = intent.getStringExtra(Constants.CONTACT_NAME);
+        _Id = intent.getStringExtra(Constants.SMS_ID);
+
         from_reciever = intent.getBooleanExtra(Constants.FROM_SMS_RECIEVER, false);
 
         if (getSupportActionBar() != null)
@@ -66,7 +72,6 @@ public class SmsDetailedView extends AppCompatActivity implements
         btSend.setOnClickListener(this);
 
         setRecyclerView(null);
-
     }
 
     @Override
@@ -112,11 +117,21 @@ public class SmsDetailedView extends AppCompatActivity implements
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+
         if (cursor != null && cursor.getCount() > 0) {
             singleGroupAdapter.swapCursor(cursor);
+            setReadSMS();
         } else {
             //no sms
         }
+    }
+
+
+    private void setReadSMS() {
+
+        Intent intent = new Intent(this, UpdateSMSService.class);
+        intent.putExtra("id", _Id);
+        startService(intent);
     }
 
     @Override

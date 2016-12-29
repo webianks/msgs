@@ -3,7 +3,8 @@ package com.webianks.hatkemessenger.services;
 import android.app.IntentService;
 import android.content.ContentValues;
 import android.content.Intent;
-import android.net.Uri;
+
+import com.webianks.hatkemessenger.constants.SmsContract;
 
 /**
  * Created by R Ankit on 26-12-2016.
@@ -20,12 +21,13 @@ public class SaveSmsService extends IntentService {
 
         String senderNo = intent.getStringExtra("sender_no");
         String message = intent.getStringExtra("message");
+        long time = intent.getLongExtra("date",0);
 
         ContentValues values = new ContentValues();
         values.put("address", senderNo);
         values.put("body", message);
-        values.put("read", "0");
-        getContentResolver().insert(Uri.parse("content://sms"), values);
+        values.put("date_sent",time);
+        getContentResolver().insert(SmsContract.ALL_SMS_URI, values);
 
     }
 }

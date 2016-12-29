@@ -86,9 +86,12 @@
             android:exported="false" />
 
         <activity android:name=".activities.SmsDetailedView" />
+
         <activity
             android:name=".activities.SettingsActivity"
             android:label="@string/title_activity_settings" />
+
+        <service android:name=".services.UpdateSMSService"/>
 
     </application>
 
