@@ -3,7 +3,6 @@ package com.webianks.hatkemessenger.activities;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.SharedPreferences;
-import android.nfc.Tag;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
@@ -12,10 +11,8 @@ import android.preference.SwitchPreference;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
-
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -223,7 +220,7 @@ public class SettingsActivity extends AppCompatActivity implements GoogleApiClie
                     SwitchPreference switchPreference = (SwitchPreference) preference;
 
                     if (!switchPreference.isChecked()) {
-                        Log.d(TAG, "isChecked");
+                        //Log.d(TAG, "isChecked");
                         ((SettingsActivity) getActivity()).startDriveApi();
                     } else {
                         ((SettingsActivity) getActivity()).disconnectApi();

@@ -4,7 +4,7 @@ package com.webianks.hatkemessenger;
  * Created by R Ankit on 24-12-2016.
  */
 
-public class Sms {
+public class SMS {
 
     private String _id;
     private String _address;
@@ -12,6 +12,7 @@ public class Sms {
     private String _readState; //"0" for have not read sms and "1" for have read sms
     private String _time;
     private String _folderName;
+    private int hashCode;
 
     public String getId() {
         return _id;
@@ -61,4 +62,19 @@ public class Sms {
     public void setFolderName(String folderName) {
         _folderName = folderName;
     }
+
+   /* @Override
+    public boolean equals(Object obj) {
+
+        SMS sms = (SMS) obj;
+
+        if(_address.equals(sms._address))
+        {
+            hashCode = sms.hashCode;
+            return true;
+        }else{
+            hashCode = super.hashCode();
+            return false;
+        }
+    }*/
 }

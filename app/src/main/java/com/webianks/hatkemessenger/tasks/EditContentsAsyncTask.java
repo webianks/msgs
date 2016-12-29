@@ -8,10 +8,8 @@ import com.google.android.gms.drive.DriveContents;
 import com.google.android.gms.drive.DriveFile;
 import com.webianks.hatkemessenger.activities.SettingsActivity;
 import com.webianks.hatkemessenger.utils.Helpers;
-
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Set;
 
 /**
  * Created by R Ankit on 28-12-2016.

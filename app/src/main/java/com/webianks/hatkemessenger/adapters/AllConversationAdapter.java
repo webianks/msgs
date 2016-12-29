@@ -1,7 +1,6 @@
 package com.webianks.hatkemessenger.adapters;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,7 +9,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.webianks.hatkemessenger.R;
-import com.webianks.hatkemessenger.Sms;
+import com.webianks.hatkemessenger.SMS;
 import com.webianks.hatkemessenger.customViews.RoundedImageView;
 
 import java.util.List;
@@ -22,10 +21,10 @@ import java.util.List;
 public class AllConversationAdapter extends RecyclerView.Adapter<AllConversationAdapter.MyHolder> {
 
     private Context context;
-    private List<Sms> data;
+    private List<SMS> data;
     private ItemCLickListener itemClickListener;
 
-    public AllConversationAdapter(Context context, List<Sms> data) {
+    public AllConversationAdapter(Context context, List<SMS> data) {
         this.context = context;
         this.data = data;
     }
@@ -42,10 +41,10 @@ public class AllConversationAdapter extends RecyclerView.Adapter<AllConversation
     @Override
     public void onBindViewHolder(AllConversationAdapter.MyHolder holder, int position) {
 
-        Sms sms = data.get(position);
+        SMS SMS = data.get(position);
 
-        holder.senderContact.setText(sms.getAddress());
-        holder.message.setText(sms.getMsg());
+        holder.senderContact.setText(SMS.getAddress());
+        holder.message.setText(SMS.getMsg());
 
     }
 

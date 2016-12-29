@@ -23,13 +23,12 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.webianks.hatkemessenger.R;
-import com.webianks.hatkemessenger.Sms;
+import com.webianks.hatkemessenger.SMS;
 import com.webianks.hatkemessenger.adapters.AllConversationAdapter;
 import com.webianks.hatkemessenger.adapters.ItemCLickListener;
 import com.webianks.hatkemessenger.constants.Constants;
@@ -37,7 +36,14 @@ import com.webianks.hatkemessenger.constants.SmsContract;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
+import java.util.Set;
 
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener,
@@ -48,7 +54,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private AllConversationAdapter allConversationAdapter;
     private String TAG = MainActivity.class.getSimpleName();
     private String mCurFilter;
-    private List<Sms> data;
+    private List<SMS> data;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
-    private void setRecyclerView(List<Sms> data) {
+    private void setRecyclerView(List<SMS> data) {
         allConversationAdapter = new AllConversationAdapter(this, data);
         allConversationAdapter.setItemClickListener(this);
         recyclerView.setAdapter(allConversationAdapter);
@@ -226,31 +232,32 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void getAllSmsToFile(Cursor c) {
 
-        List<Sms> lstSms = new ArrayList<Sms>();
-        Sms objSms = null;
+        List<SMS> lstSms = new ArrayList<SMS>();
+        SMS objSMS = null;
         int totalSMS = c.getCount();
 
         if (c.moveToFirst()) {
             for (int i = 0; i < totalSMS; i++) {
 
                 try {
-                    objSms = new Sms();
-                    objSms.setId(c.getString(c.getColumnIndexOrThrow("_id")));
-                    objSms.setAddress(c.getString(c
+                    objSMS = new SMS();
+                    objSMS.setId(c.getString(c.getColumnIndexOrThrow("_id")));
+                    objSMS.setAddress(c.getString(c
                             .getColumnIndexOrThrow("address")));
-                    objSms.setMsg(c.getString(c.getColumnIndexOrThrow("body")));
-                    objSms.setReadState(c.getString(c.getColumnIndex("read")));
-                    objSms.setTime(c.getString(c.getColumnIndexOrThrow("date")));
+                    objSMS.setMsg(c.getString(c.getColumnIndexOrThrow("body")));
+                    objSMS.setReadState(c.getString(c.getColumnIndex("read")));
+                    objSMS.setTime(c.getString(c.getColumnIndexOrThrow("date")));
                     if (c.getString(c.getColumnIndexOrThrow("type")).contains("1")) {
-                        objSms.setFolderName("inbox");
+                        objSMS.setFolderName("inbox");
                     } else {
-                        objSms.setFolderName("sent");
+                        objSMS.setFolderName("sent");
                     }
 
                 } catch (Exception e) {
 
                 } finally {
-                    lstSms.add(objSms);
+
+                    lstSms.add(objSMS);
                     c.moveToNext();
                 }
             }
@@ -258,25 +265,55 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         c.close();
 
         data = lstSms;
-        setRecyclerView(data);
 
-        convertToJson(lstSms);
+        //Log.d(TAG,"Size before "+data.size());
+        sortAndSetToRecycler(lstSms);
 
     }
 
-    private void convertToJson(List<Sms> lstSms) {
+    private void sortAndSetToRecycler(List<SMS> lstSms) {
 
-        Type listType = new TypeToken<List<Sms>>() {
+        Map<String, SMS> map = new LinkedHashMap<>();
+        for (SMS sms : data) {
+            map.put(sms.getAddress(), sms);
+        }
+        data.clear();
+        data.addAll(map.values());
+        setRecyclerView(data);
+
+        //Log.d(TAG,"Size after "+data.size());
+
+        convertToJson(lstSms);
+    }
+
+    private void convertToJson(List<SMS> lstSms) {
+
+        Type listType = new TypeToken<List<SMS>>() {
         }.getType();
         Gson gson = new Gson();
         String json = gson.toJson(lstSms, listType);
 
-        SharedPreferences sp = getSharedPreferences(Constants.PREF_NAME,MODE_PRIVATE);
+        SharedPreferences sp = getSharedPreferences(Constants.PREF_NAME, MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
-        editor.putString(Constants.SMS_JSON,json);
+        editor.putString(Constants.SMS_JSON, json);
         editor.apply();
         //List<String> target2 = gson.fromJson(json, listType);
         //Log.d(TAG, json);
+
+    }
+
+    private void removeTheDuplicates(List<SMS> myList) {
+
+        for (ListIterator<SMS> iterator = myList.listIterator(); iterator.hasNext(); ) {
+
+            SMS sms = iterator.next();
+
+            if (Collections.frequency(myList, sms) > 1) {
+                iterator.remove();
+            }
+
+        }
+        System.out.println(myList.toString());
 
     }
 
