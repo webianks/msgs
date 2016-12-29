@@ -8,4 +8,6 @@
     <color name="dark">#0391fd</color>
     <color name="conv_backgroung">#eeeeee</color>
     <color name="strip_color">#dddddd</color>
+    <color name="black">#212121</color>
+    <color name="colorSecondaryText">#757575</color>
 </resources>

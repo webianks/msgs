@@ -23,6 +23,7 @@
         android:layout_toRightOf="@id/smsImage"
         android:text="@string/title"
         android:textAllCaps="true"
+        android:textSize="@dimen/previewMessageSize"
         android:textColor="@color/colorPrimaryText" />
 
     <TextView

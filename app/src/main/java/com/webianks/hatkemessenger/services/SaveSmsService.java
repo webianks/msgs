@@ -24,6 +24,7 @@ public class SaveSmsService extends IntentService {
         ContentValues values = new ContentValues();
         values.put("address", senderNo);
         values.put("body", message);
+        values.put("read", "0");
         getContentResolver().insert(Uri.parse("content://sms"), values);
 
     }

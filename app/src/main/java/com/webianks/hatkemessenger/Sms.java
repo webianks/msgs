@@ -12,7 +12,6 @@ public class SMS {
     private String _readState; //"0" for have not read sms and "1" for have read sms
     private String _time;
     private String _folderName;
-    private int hashCode;
 
     public String getId() {
         return _id;
