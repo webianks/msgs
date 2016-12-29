@@ -36,7 +36,7 @@ public class SmsDetailedView extends AppCompatActivity implements
     private ImageView btSend;
     private String message;
     private boolean from_reciever;
-    private String _Id;
+    private long _Id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +54,7 @@ public class SmsDetailedView extends AppCompatActivity implements
 
 
         contact = intent.getStringExtra(Constants.CONTACT_NAME);
-        _Id = intent.getStringExtra(Constants.SMS_ID);
+        _Id = intent.getLongExtra(Constants.SMS_ID,-123);
 
         from_reciever = intent.getBooleanExtra(Constants.FROM_SMS_RECIEVER, false);
 
@@ -72,6 +72,7 @@ public class SmsDetailedView extends AppCompatActivity implements
         btSend.setOnClickListener(this);
 
         setRecyclerView(null);
+        setReadSMS();
     }
 
     @Override
@@ -120,7 +121,6 @@ public class SmsDetailedView extends AppCompatActivity implements
 
         if (cursor != null && cursor.getCount() > 0) {
             singleGroupAdapter.swapCursor(cursor);
-            setReadSMS();
         } else {
             //no sms
         }

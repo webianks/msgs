@@ -208,7 +208,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
     @Override
-    public void itemClicked(int position, String contact, String id) {
+    public void itemClicked(int position, String contact, long id) {
         Intent intent = new Intent(this, SmsDetailedView.class);
         intent.putExtra(Constants.CONTACT_NAME, contact);
         intent.putExtra(Constants.SMS_ID, id);
@@ -291,7 +291,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 try {
                     objSMS = new SMS();
-                    objSMS.setId(c.getString(c.getColumnIndexOrThrow("_id")));
+                    objSMS.setId(c.getLong(c.getColumnIndexOrThrow("_id")));
                     objSMS.setAddress(c.getString(c
                             .getColumnIndexOrThrow("address")));
                     objSMS.setMsg(c.getString(c.getColumnIndexOrThrow("body")));

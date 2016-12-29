@@ -2,6 +2,7 @@ package com.webianks.hatkemessenger.services;
 
 import android.app.IntentService;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -25,45 +26,55 @@ public class UpdateSMSService extends IntentService {
     protected void onHandleIntent(Intent intent) {
 
 
-        Log.d("webi",intent.getStringExtra("id"));
+        Log.d("webi","ID SELECTED "+intent.getLongExtra("id",-123));
      /*
         String[] selectionArgs = new String[]{intent.getStringExtra("contact")};
         getContentResolver().update(SmsContract.ALL_SMS_URI, values, SmsContract.SMS_SELECTION, selectionArgs);*/
-        markSmsRead(intent.getStringExtra("id"));
+
+        markSmsRead(intent.getLongExtra("id",-123));
+       // deleteSMS(intent.getLongExtra("id",-123));
 
     }
 
-    public void markSmsRead(String id) {
+    public void markSmsRead(long messageId) {
 
         ContentValues cv = new ContentValues();
-        cv.put("message", "I have modified the message.");
+        cv.put("read", "1");
 
-        //long affected = getContentResolver().update(Uri.parse("content://sms/" + id), cv, null, null);
-
-        //String[] selectionArgs = new String[]{id};
-        //long affected = getContentResolver().update(SmsContract.ALL_SMS_URI, cv, SmsContract.SMS_SELECTION_ID, selectionArgs);
-
-        String[] selectionArgs = {id};
-
-        Cursor found = getContentResolver().query(SmsContract.ALL_SMS_URI,
-                new String[]{SmsContract.COLUMN_ID},
-                SmsContract.SMS_SELECTION_ID,
-                selectionArgs,
-                null);
-
-        if (found.moveToFirst()){
-
-            Log.d("webi"," Affected: "+found.getString(found.getColumnIndex(SmsContract.COLUMN_ID)));
-
-            long affected = getContentResolver().
-                    delete(SmsContract.ALL_SMS_URI, SmsContract.SMS_SELECTION_ID, selectionArgs);
-
-            Log.d("webi"," Affected: "+affected);
-
-
-        }
-
+        long changed = getContentResolver().update(Uri.parse("content://sms/" + messageId),cv, null, null);
+        Log.e("webi", "Message changed: "+changed);
 
     }
+
+    /*public void deleteSMS(long messageId) {
+
+        try {
+            Uri uriSms = Uri.parse("content://sms/inbox");
+            Cursor c = getContentResolver().query(uriSms, new String[]{"_id"}, null, null, null);
+
+            if (c != null && c.moveToFirst()) {
+                do {
+                    long id = c.getLong(0);
+
+                    if (id == messageId) {
+                        getContentResolver().delete(
+                                Uri.parse("content://sms/" + id), null, null);
+
+                        Log.e("webi", "Message is Deleted successfully");
+                    }
+
+                } while (c.moveToNext());
+            }
+
+            if (c != null) {
+                c.close();
+            }
+        } catch (Exception e) {
+            Log.e("webi", e.toString());
+        }
+
+    }
+
+*/
 
 }

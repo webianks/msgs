@@ -6,14 +6,14 @@ package com.webianks.hatkemessenger;
 
 public class SMS {
 
-    private String _id;
+    private long _id;
     private String _address;
     private String _msg;
     private String _readState; //"0" for have not read sms and "1" for have read sms
     private String _time;
     private String _folderName;
 
-    public String getId() {
+    public long getId() {
         return _id;
     }
 
@@ -38,7 +38,7 @@ public class SMS {
     }
 
 
-    public void setId(String id) {
+    public void setId(long id) {
         _id = id;
     }
 
