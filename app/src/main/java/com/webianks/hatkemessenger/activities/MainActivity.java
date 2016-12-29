@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.os.Bundle;
 import android.os.Parcelable;
 import android.provider.Telephony;
 import android.support.design.widget.FloatingActionButton;
@@ -19,7 +20,6 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -175,16 +175,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        if (listState != null) {
-            linearLayoutManager.onRestoreInstanceState(listState);
-        }
-
     }
 
 
@@ -351,17 +341,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //List<String> target2 = gson.fromJson(json, listType);
         //Log.d(TAG, json);
 
-    }
-
-    protected void onSaveInstanceState(Bundle state) {
-        super.onSaveInstanceState(state);
-        if (linearLayoutManager != null)
-            state.putParcelable(Constants.LIST_STATE_KEY, linearLayoutManager.onSaveInstanceState());
-    }
-
-    protected void onRestoreInstanceState(Bundle state) {
-        super.onRestoreInstanceState(state);
-        listState = state.getParcelable(Constants.LIST_STATE_KEY);
     }
 
 }
