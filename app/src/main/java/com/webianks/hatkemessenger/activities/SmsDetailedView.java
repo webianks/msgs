@@ -220,8 +220,13 @@ public class SmsDetailedView extends AppCompatActivity implements
         registerReceiver(sendBroadcastReceiver, new IntentFilter(SENT));
         registerReceiver(deliveryBroadcastReciever, new IntentFilter(DELIVERED));
 
-        SmsManager sms = SmsManager.getDefault();
-        sms.sendTextMessage(contact, null, message, sentPI, deliveredPI);
+        try {
+            SmsManager sms = SmsManager.getDefault();
+            sms.sendTextMessage(contact, null, message, sentPI, deliveredPI);
+        }catch (Exception e){
+            Toast.makeText(this,getString(R.string.cant_send),Toast.LENGTH_SHORT).show();
+
+        }
     }
 
     @Override
