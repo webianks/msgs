@@ -9,30 +9,44 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".activities.MainActivity">
 
-    <EditText
-        android:id="@+id/editText"
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/editTextLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:hint="Enter Phone Number"
-        android:inputType="phone" />
+        android:layout_height="wrap_content">
 
-    <EditText
-        android:id="@+id/editText2"
+        <EditText
+            android:id="@+id/editText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:hint="Enter Phone Number"
+            android:inputType="phone" />
+
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/editTextLayout2"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/editText"
-        android:layout_alignStart="@+id/editText"
-        android:layout_below="@+id/editText"
-        android:hint="Enter SMS"/>
+        android:layout_below="@+id/editTextLayout"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/editText2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/editText"
+            android:layout_alignStart="@+id/editText"
+            android:hint="Enter SMS" />
+
+    </android.support.design.widget.TextInputLayout>
 
     <Button
         android:id="@+id/btnSendSMS"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/editTextLayout2"
+        android:layout_centerHorizontal="true"
         android:layout_marginTop="46dp"
-        android:text="Send Sms"
-        android:layout_below="@+id/editText2"
-        android:layout_centerHorizontal="true" />
+        android:text="Send Sms" />
 
 </RelativeLayout>

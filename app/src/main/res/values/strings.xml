@@ -14,5 +14,7 @@
     <string name="search">Search</string>
     <string name="sms_delivered">SMS delivered</string>
     <string name="sms_not_delivered">SMS not delivered</string>
+    <string name="please_write_number">Please provide a number</string>
+    <string name="please_write_message">Please write some message</string>
 
 </resources>

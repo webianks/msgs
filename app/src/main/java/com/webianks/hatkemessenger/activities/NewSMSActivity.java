@@ -69,7 +69,17 @@ public class NewSMSActivity extends AppCompatActivity implements View.OnClickLis
                 phoneNo = txtphoneNo.getText().toString();
                 message = txtMessage.getText().toString();
 
-                sendSMSNow();
+                if (phoneNo!=null && phoneNo.trim().length()>0){
+
+                    if (message!=null && message.trim().length()>0){
+
+                        sendSMSNow();
+
+                    }else
+                        txtMessage.setError(getString(R.string.please_write_message));
+
+                }else
+                    txtphoneNo.setError(getString(R.string.please_write_number));
 
                 break;
         }

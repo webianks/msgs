@@ -1,7 +1,10 @@
 package com.webianks.hatkemessenger.activities;
 
 import android.Manifest;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -24,6 +27,8 @@ import com.webianks.hatkemessenger.R;
 import com.webianks.hatkemessenger.adapters.SingleGroupAdapter;
 import com.webianks.hatkemessenger.constants.Constants;
 import com.webianks.hatkemessenger.constants.SmsContract;
+import com.webianks.hatkemessenger.receivers.DeliverReceiver;
+import com.webianks.hatkemessenger.receivers.SentReceiver;
 import com.webianks.hatkemessenger.services.UpdateSMSService;
 
 public class SmsDetailedView extends AppCompatActivity implements
@@ -39,6 +44,7 @@ public class SmsDetailedView extends AppCompatActivity implements
     private long _Id;
     private int color;
     private String read = "1";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,8 +82,6 @@ public class SmsDetailedView extends AppCompatActivity implements
         btSend.setOnClickListener(this);
 
         setRecyclerView(null);
-
-        //right now we setting every time which is not good thing.
 
         if (read!=null && read.equals("0"))
             setReadSMS();
@@ -161,6 +165,15 @@ public class SmsDetailedView extends AppCompatActivity implements
 
         message = etMessage.getText().toString();
 
+        if (message!=null && message.trim().length()>0)
+            requestPermisions();
+        else
+            etMessage.setError(getString(R.string.please_write_message));
+
+    }
+
+    private void requestPermisions() {
+
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.SEND_SMS)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -174,6 +187,7 @@ public class SmsDetailedView extends AppCompatActivity implements
         }else{
             sendSMSNow();
         }
+
     }
 
     @Override
@@ -194,10 +208,20 @@ public class SmsDetailedView extends AppCompatActivity implements
 
     private void sendSMSNow() {
 
-        SmsManager smsManager = SmsManager.getDefault();
-        smsManager.sendTextMessage(contact, null, message, null, null);
-        Toast.makeText(getApplicationContext(), "SMS sent.",
-                Toast.LENGTH_LONG).show();
+        BroadcastReceiver sendBroadcastReceiver = new SentReceiver();
+        BroadcastReceiver deliveryBroadcastReciever = new DeliverReceiver();
+
+        String SENT = "SMS_SENT";
+        String DELIVERED = "SMS_DELIVERED";
+
+        PendingIntent sentPI = PendingIntent.getBroadcast(this, 0, new Intent(SENT), 0);
+        PendingIntent deliveredPI = PendingIntent.getBroadcast(this, 0, new Intent(DELIVERED), 0);
+
+        registerReceiver(sendBroadcastReceiver, new IntentFilter(SENT));
+        registerReceiver(deliveryBroadcastReciever, new IntentFilter(DELIVERED));
+
+        SmsManager sms = SmsManager.getDefault();
+        sms.sendTextMessage(contact, null, message, sentPI, deliveredPI);
     }
 
     @Override
