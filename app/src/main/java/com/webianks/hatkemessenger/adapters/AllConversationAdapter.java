@@ -19,6 +19,7 @@ import com.amulyakhare.textdrawable.TextDrawable;
 import com.webianks.hatkemessenger.R;
 import com.webianks.hatkemessenger.SMS;
 import com.webianks.hatkemessenger.utils.ColorGeneratorModified;
+import com.webianks.hatkemessenger.utils.Helpers;
 
 import java.util.List;
 
@@ -66,10 +67,16 @@ public class AllConversationAdapter extends RecyclerView.Adapter<AllConversation
             holder.senderContact.setTypeface(holder.senderContact.getTypeface(), Typeface.BOLD);
             holder.message.setTypeface(holder.message.getTypeface(), Typeface.BOLD);
             holder.message.setTextColor(ContextCompat.getColor(context, R.color.black));
+            holder.time.setTypeface(holder.time.getTypeface(), Typeface.BOLD);
+            holder.time.setTextColor(ContextCompat.getColor(context,R.color.black));
         } else {
             holder.senderContact.setTypeface(null, Typeface.NORMAL);
             holder.message.setTypeface(null, Typeface.NORMAL);
+            holder.time.setTypeface(null, Typeface.NORMAL);
+
         }
+
+        holder.time.setText(Helpers.getDate(SMS.getTime()));
 
     }
 
@@ -89,6 +96,7 @@ public class AllConversationAdapter extends RecyclerView.Adapter<AllConversation
         private ImageView senderImage;
         private TextView senderContact;
         private TextView message;
+        private TextView time;
         private RelativeLayout mainLayout;
 
         public MyHolder(View itemView) {
@@ -96,6 +104,7 @@ public class AllConversationAdapter extends RecyclerView.Adapter<AllConversation
             senderImage = (ImageView) itemView.findViewById(R.id.smsImage);
             senderContact = (TextView) itemView.findViewById(R.id.smsSender);
             message = (TextView) itemView.findViewById(R.id.smsContent);
+            time = (TextView) itemView.findViewById(R.id.time);
             mainLayout = (RelativeLayout) itemView.findViewById(R.id.small_layout_main);
 
             mainLayout.setOnClickListener(this);

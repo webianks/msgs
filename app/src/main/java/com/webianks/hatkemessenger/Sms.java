@@ -10,7 +10,7 @@ public class SMS {
     private String _address;
     private String _msg;
     private String _readState; //"0" for have not read sms and "1" for have read sms
-    private String _time;
+    private long _time;
     private String _folderName;
 
     public long getId() {
@@ -29,7 +29,7 @@ public class SMS {
         return _readState;
     }
 
-    public String getTime() {
+    public long getTime() {
         return _time;
     }
 
@@ -54,7 +54,7 @@ public class SMS {
         _readState = readState;
     }
 
-    public void setTime(String time) {
+    public void setTime(long time) {
         _time = time;
     }
 
@@ -62,18 +62,15 @@ public class SMS {
         _folderName = folderName;
     }
 
-   /* @Override
+    @Override
     public boolean equals(Object obj) {
 
         SMS sms = (SMS) obj;
 
-        if(_address.equals(sms._address))
-        {
-            hashCode = sms.hashCode;
-            return true;
-        }else{
-            hashCode = super.hashCode();
-            return false;
-        }
-    }*/
+        return _address.equals(sms._address);
+    }
+
+    public int hashCode() {
+        return this._address.hashCode();
+    }
 }

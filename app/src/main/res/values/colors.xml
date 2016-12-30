@@ -11,4 +11,6 @@
     <color name="black">#212121</color>
     <color name="colorSecondaryText">#757575</color>
     <color name="dark_two">#eeeeee</color>
+    <color name="colorPrimaryThird">#757575</color>
+    <color name="grey">#eeeeee</color>
 </resources>

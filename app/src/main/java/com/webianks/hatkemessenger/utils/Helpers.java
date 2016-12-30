@@ -16,6 +16,8 @@ import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 /**
  * Created by R Ankit on 27-12-2016.
@@ -79,5 +81,15 @@ public class Helpers {
         return sp.getString(Constants.SMS_JSON, null);
     }
 
+    public static String getDate(long milliSeconds)
+    {
+        String dateFormat = "dd/MM/yyyy";
+
+        SimpleDateFormat formatter = new SimpleDateFormat(dateFormat);
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(milliSeconds);
+        return formatter.format(calendar.getTime());
+    }
 
 }

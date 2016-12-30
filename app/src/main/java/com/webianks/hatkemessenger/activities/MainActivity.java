@@ -41,9 +41,9 @@ import com.webianks.hatkemessenger.constants.SmsContract;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener,
@@ -247,7 +247,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 null,
                 selection,
                 selectionArgs,
-                null);
+                SmsContract.SORT_DESC);
     }
 
     @Override
@@ -313,7 +313,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             .getColumnIndexOrThrow("address")));
                     objSMS.setMsg(c.getString(c.getColumnIndexOrThrow("body")));
                     objSMS.setReadState(c.getString(c.getColumnIndex("read")));
-                    objSMS.setTime(c.getString(c.getColumnIndexOrThrow("date")));
+                    objSMS.setTime(c.getLong(c.getColumnIndexOrThrow("date")));
                     if (c.getString(c.getColumnIndexOrThrow("type")).contains("1")) {
                         objSMS.setFolderName("inbox");
                     } else {
@@ -340,15 +340,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void sortAndSetToRecycler(List<SMS> lstSms) {
 
-        Map<String, SMS> map = new LinkedHashMap<>();
-        for (SMS sms : data) {
-            map.put(sms.getAddress(), sms);
-        }
-        data.clear();
-        data.addAll(map.values());
+        Set<SMS> s = new LinkedHashSet<>(lstSms);
+        data = new ArrayList<>(s);
         setRecyclerView(data);
-
-        //Log.d(TAG,"Size after "+data.size());
 
         convertToJson(lstSms);
     }
