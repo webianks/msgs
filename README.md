@@ -30,7 +30,7 @@ You can following apis implementation in this project.
 <li>Search through all the messages </li>
 </ul>
 
-#Library Used
+#Libraries Used
 
 <ul>
 <li>Play Services - Drive</li>
@@ -40,6 +40,11 @@ You can following apis implementation in this project.
 <li>Google GSON</li>
 <li>TextDrawable (For Avatars)</li>
 </ul>
+
+
+#Download
+
+<a href="https://drive.google.com/open?id=0B2iJjTDJnXrWcFNaeXNTSXlGU3c" target="_blank"><img src="https://github.com/webianks/HatkeMessenger/blob/master/screens/download.png" height="74" width="50"></a>
 
 
 #Note
