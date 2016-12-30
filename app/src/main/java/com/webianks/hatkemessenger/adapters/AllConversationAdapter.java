@@ -34,6 +34,7 @@ public class AllConversationAdapter extends RecyclerView.Adapter<AllConversation
     private ItemCLickListener itemClickListener;
     ColorGeneratorModified generator = ColorGeneratorModified.MATERIAL;
 
+
     public AllConversationAdapter(Context context, List<SMS> data) {
         this.context = context;
         this.data = data;
@@ -61,6 +62,8 @@ public class AllConversationAdapter extends RecyclerView.Adapter<AllConversation
         String firstChar = String.valueOf(SMS.getAddress().charAt(0));
         TextDrawable drawable = TextDrawable.builder().buildRound(firstChar, color);
         holder.senderImage.setImageDrawable(drawable);
+
+        SMS.setColor(color);
 
 
         if (SMS.getReadState().equals("0")) {
@@ -118,7 +121,7 @@ public class AllConversationAdapter extends RecyclerView.Adapter<AllConversation
                 data.get(getAdapterPosition()).setReadState("1");
                 notifyItemChanged(getAdapterPosition());
 
-                itemClickListener.itemClicked(getAdapterPosition(), senderContact.getText().toString(),
+                itemClickListener.itemClicked(data.get(getAdapterPosition()).getColor(), senderContact.getText().toString(),
                         data.get(getAdapterPosition()).getId());
             }
 

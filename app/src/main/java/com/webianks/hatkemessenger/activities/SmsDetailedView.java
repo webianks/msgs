@@ -4,13 +4,13 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.telephony.SmsManager;
@@ -37,6 +37,7 @@ public class SmsDetailedView extends AppCompatActivity implements
     private String message;
     private boolean from_reciever;
     private long _Id;
+    private int color;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +56,7 @@ public class SmsDetailedView extends AppCompatActivity implements
 
         contact = intent.getStringExtra(Constants.CONTACT_NAME);
         _Id = intent.getLongExtra(Constants.SMS_ID,-123);
+        color = intent.getIntExtra(Constants.COLOR,757575);
 
         from_reciever = intent.getBooleanExtra(Constants.FROM_SMS_RECIEVER, false);
 
@@ -72,6 +74,8 @@ public class SmsDetailedView extends AppCompatActivity implements
         btSend.setOnClickListener(this);
 
         setRecyclerView(null);
+
+        //right now we setting every time which is not good thing.
         setReadSMS();
     }
 
@@ -93,7 +97,7 @@ public class SmsDetailedView extends AppCompatActivity implements
 
 
     private void setRecyclerView(Cursor cursor) {
-        singleGroupAdapter = new SingleGroupAdapter(this, cursor);
+        singleGroupAdapter = new SingleGroupAdapter(this, cursor,color);
         recyclerView.setAdapter(singleGroupAdapter);
     }
 

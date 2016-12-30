@@ -12,6 +12,7 @@ public class SMS {
     private String _readState; //"0" for have not read sms and "1" for have read sms
     private long _time;
     private String _folderName;
+    private int color;
 
     public long getId() {
         return _id;
@@ -72,5 +73,13 @@ public class SMS {
 
     public int hashCode() {
         return this._address.hashCode();
+    }
+
+    public void setColor(int color) {
+        this.color = color;
+    }
+
+    public int getColor() {
+        return color;
     }
 }
