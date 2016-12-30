@@ -12,7 +12,7 @@ import com.webianks.hatkemessenger.R;
  * Created by R Ankit on 30-12-2016.
  */
 
-public class SMSDeliverReceiver extends BroadcastReceiver {
+public class DeliverReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent arg1) {
