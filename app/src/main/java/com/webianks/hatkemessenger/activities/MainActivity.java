@@ -275,13 +275,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         data = null;
         allConversationAdapter.notifyDataSetChanged();
-
         //allConversationAdapter.swapCursor(null);
     }
 
     @Override
     public boolean onQueryTextSubmit(String query) {
-        //Log.d(TAG, "onQueryTextSubmit: " + query);
         mCurFilter = !TextUtils.isEmpty(query) ? query : null;
         getSupportLoaderManager().restartLoader(Constants.ALL_SMS_LOADER, null, this);
         return true;
@@ -289,7 +287,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public boolean onQueryTextChange(String newText) {
-        //Log.d(TAG, "onQueryTextChange: " + newText);
         mCurFilter = !TextUtils.isEmpty(newText) ? newText : null;
         getSupportLoaderManager().restartLoader(Constants.ALL_SMS_LOADER, null, this);
         return true;

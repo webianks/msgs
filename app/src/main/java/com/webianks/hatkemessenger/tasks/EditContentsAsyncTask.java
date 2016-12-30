@@ -8,6 +8,7 @@ import com.google.android.gms.drive.DriveContents;
 import com.google.android.gms.drive.DriveFile;
 import com.webianks.hatkemessenger.activities.SettingsActivity;
 import com.webianks.hatkemessenger.utils.Helpers;
+
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -48,11 +49,14 @@ public class EditContentsAsyncTask extends ApiClientAsyncTask<DriveFile, Void, B
 
     @Override
     protected void onPostExecute(Boolean result) {
+
         if (!result) {
-            ((SettingsActivity)context).showMessage("Error while editing contents");
+            ((SettingsActivity)context).showMessage("Error while creating backup.");
             return;
         }
-        ((SettingsActivity)context).showMessage("Successfully edited contents");
+        ((SettingsActivity)context).showMessage("Backup Successful");
+
+
     }
 }
 

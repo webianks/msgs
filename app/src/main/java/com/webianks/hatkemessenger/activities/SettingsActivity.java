@@ -1,18 +1,17 @@
 package com.webianks.hatkemessenger.activities;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.IntentSender;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
-import android.preference.PreferenceManager;
-import android.preference.SwitchPreference;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.widget.Toast;
+
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -35,6 +34,8 @@ public class SettingsActivity extends AppCompatActivity implements GoogleApiClie
     private GoogleApiClient mGoogleApiClient;
     private final int RESOLVE_CONNECTION_REQUEST_CODE = 111;
     private DriveApi.DriveContentsResult driveContentsResult;
+    private ProgressDialog progressDialog;
+    private int type;
 
     final private ResultCallback<DriveApi.DriveContentsResult> driveContentsCallback =
             new ResultCallback<DriveApi.DriveContentsResult>() {
@@ -46,8 +47,9 @@ public class SettingsActivity extends AppCompatActivity implements GoogleApiClie
                     }
 
                     driveContentsResult = result;
-                    //first try to get the file if exists already
-                    Drive.DriveApi.getAppFolder(getGoogleApiClient()).listChildren(mGoogleApiClient).setResultCallback(metadataCallback);
+
+                    Drive.DriveApi.getAppFolder(getGoogleApiClient()).listChildren(mGoogleApiClient).
+                            setResultCallback(metadataCallback);
 
                 }
             };
@@ -64,19 +66,26 @@ public class SettingsActivity extends AppCompatActivity implements GoogleApiClie
 
                     if (result.getMetadataBuffer().getCount() == 0) {
                         //now create a new file as it doesn't exist
-                        createFile();
+
+                        if (type != Constants.TYPE_RESTORE)
+                            createFile();
+                        else
+                           showMessage("No  backup found");
+
                         return;
                     }
 
-                    // mResultsAdapter.clear();
-                    //  mResultsAdapter.append(result.getMetadataBuffer());
-
                     DriveId driveId = result.getMetadataBuffer().get(0).getDriveId();
 
-                    new RetrieveDriveFileContentsAsyncTask(
-                            SettingsActivity.this).execute(driveId);
-
-                    showMessage("Successfully listed files. " + result.getMetadataBuffer().getCount());
+                    if (type == Constants.TYPE_RESTORE){
+                        //for retrieving the content of the file
+                        new RetrieveDriveFileContentsAsyncTask(SettingsActivity.this).execute(driveId);
+                    }
+                    else{
+                        //for editing the content of the file
+                        DriveFile file = driveId.asDriveFile();
+                        new EditContentsAsyncTask(SettingsActivity.this).execute(file);
+                    }
 
                 }
             };
@@ -105,14 +114,18 @@ public class SettingsActivity extends AppCompatActivity implements GoogleApiClie
 
 
                     DriveFile file = result.getDriveFile();
-
                     new EditContentsAsyncTask(SettingsActivity.this).execute(file);
-                    showMessage("Created a file in App Folder: " + result.getDriveFile().getDriveId());
+
+                    //showMessage("Created a file in App Folder: ");
 
                 }
             };
 
     public void showMessage(String message) {
+
+        if (progressDialog!=null)
+            progressDialog.dismiss();
+
         Toast.makeText(this, message, Toast.LENGTH_LONG).show();
         //Log.d(TAG, message);
     }
@@ -159,12 +172,7 @@ public class SettingsActivity extends AppCompatActivity implements GoogleApiClie
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-
-        //Toast.makeText(this, "Connected to drive api", Toast.LENGTH_LONG).show();
-        Drive.DriveApi.newDriveContents(getGoogleApiClient())
-                .setResultCallback(driveContentsCallback);
-
-
+       doAfterConnectedStuff();
     }
 
     @Override
@@ -199,7 +207,8 @@ public class SettingsActivity extends AppCompatActivity implements GoogleApiClie
 
     public static class MyPreferenceFragment extends PreferenceFragment {
 
-        private SwitchPreference drivePref;
+        private Preference drivePref;
+        private Preference restorePref;
         private String TAG = MyPreferenceFragment.class.getSimpleName();
 
         @Override
@@ -208,36 +217,66 @@ public class SettingsActivity extends AppCompatActivity implements GoogleApiClie
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_general);
 
-            final SharedPreferences.Editor my_prefrence = PreferenceManager.
-                    getDefaultSharedPreferences(getActivity()).edit();
-
-            drivePref = (SwitchPreference) findPreference(Constants.BACKUP);
-            drivePref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            drivePref =  findPreference(Constants.BACKUP);
+            drivePref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
-                public boolean onPreferenceChange(Preference preference, Object o) {
-                    //backup dialog
+                public boolean onPreferenceClick(Preference preference) {
 
-                    SwitchPreference switchPreference = (SwitchPreference) preference;
-
-                    if (!switchPreference.isChecked()) {
-                        //Log.d(TAG, "isChecked");
-                        ((SettingsActivity) getActivity()).startDriveApi();
-                    } else {
-                        ((SettingsActivity) getActivity()).disconnectApi();
-                    }
-
+                    createBackup();
                     return true;
+
+                }
+            });
+
+            restorePref = findPreference(Constants.RESTORE);
+            restorePref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+
+                    //backup dialog
+                    restoreBackup();
+                    return true;
+
                 }
             });
         }
+
+        private void createBackup() {
+            ((SettingsActivity) getActivity()).startDriveApi(Constants.TYPE_BACKUP);
+        }
+
+        private void restoreBackup() {
+            ((SettingsActivity) getActivity()).startDriveApi(Constants.TYPE_RESTORE);
+        }
+
     }
 
-    private void disconnectApi() {
-        mGoogleApiClient.disconnect();
+    private void startDriveApi(int type) {
+        this.type = type;
+
+        if (!mGoogleApiClient.isConnected())
+            mGoogleApiClient.connect();
+        else
+            doAfterConnectedStuff();
     }
 
-    private void startDriveApi() {
-        mGoogleApiClient.connect();
+    private void doAfterConnectedStuff() {
+
+        if (progressDialog == null)
+            progressDialog = new ProgressDialog(this);
+
+        if (type == Constants.TYPE_BACKUP)
+            progressDialog.setTitle(getString(R.string.google_drive_backup));
+        else
+            progressDialog.setTitle(getString(R.string.google_drive_restore));
+
+        progressDialog.setMessage(getString(R.string.please_wait));
+        progressDialog.setIndeterminate(true);
+        progressDialog.show();
+
+        Drive.DriveApi.newDriveContents(getGoogleApiClient()).setResultCallback(driveContentsCallback);
+
     }
+
 
 }

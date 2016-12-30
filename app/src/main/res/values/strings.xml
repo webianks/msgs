@@ -17,5 +17,9 @@
     <string name="please_write_number">Please provide a number</string>
     <string name="please_write_message">Please write some message</string>
     <string name="cant_send">Can\'t send sms to this contact.</string>
+    <string name="please_wait">Please wait..</string>
+    <string name="restore_backup">Restore Backup</string>
+    <string name="restore_backup_all">Restore all your drive stored sms.</string>
+    <string name="google_drive_restore">Restore Backup</string>
 
 </resources>

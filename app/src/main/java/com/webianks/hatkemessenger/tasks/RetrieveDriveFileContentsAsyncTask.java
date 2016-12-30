@@ -1,12 +1,15 @@
 package com.webianks.hatkemessenger.tasks;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
+
 import com.google.android.gms.drive.DriveApi;
 import com.google.android.gms.drive.DriveContents;
 import com.google.android.gms.drive.DriveFile;
 import com.google.android.gms.drive.DriveId;
 import com.webianks.hatkemessenger.activities.SettingsActivity;
+import com.webianks.hatkemessenger.constants.Constants;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -57,12 +60,22 @@ public class RetrieveDriveFileContentsAsyncTask
     @Override
     protected void onPostExecute(String result) {
         super.onPostExecute(result);
+
         if (result == null) {
             ((SettingsActivity)context).showMessage("Error while reading from the file");
             return;
         }
-        //showMessage("File contents: " + result);
-        //Log.d(TAG,result);
+        ((SettingsActivity)context).showMessage("Restored your messages. ");
+        restoreJSON(result);
+    }
+
+    private void restoreJSON(String json) {
+
+        SharedPreferences sp = context.getSharedPreferences(Constants.PREF_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putString(Constants.SMS_JSON, json);
+        editor.apply();
+
     }
 }
 

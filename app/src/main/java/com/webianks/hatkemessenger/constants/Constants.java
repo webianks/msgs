@@ -19,4 +19,7 @@ public class Constants {
     public static final String SMS_ID = "_id";
     public static final String COLOR = "color";
     public static final String READ = "read";
+    public static final CharSequence RESTORE = "restore";
+    public static final int TYPE_RESTORE = 1;
+    public static final int TYPE_BACKUP = 0;
 }
