@@ -28,6 +28,7 @@ import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -57,6 +58,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private List<SMS> data;
     private LinearLayoutManager linearLayoutManager;
     private BroadcastReceiver mReceiver;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +73,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         recyclerView = (RecyclerView) findViewById(R.id.recyclerview);
         fab = (FloatingActionButton) findViewById(R.id.fab_new);
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
         linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
         fab.setOnClickListener(this);
@@ -253,6 +256,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+
+        progressBar.setVisibility(View.GONE);
 
         if (cursor != null && cursor.getCount() > 0) {
 

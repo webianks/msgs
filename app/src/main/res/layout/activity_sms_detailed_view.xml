@@ -14,6 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="@dimen/type_box_height"
+        android:scrollbars="vertical"
         android:background="@color/white" />
 
     <RelativeLayout
