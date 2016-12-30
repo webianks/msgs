@@ -1,5 +1,5 @@
 # HatkeMessenger
-Messenger App built as an assignment for BuyHatke Android Developer Hiring.
+SMS App built as an assignment for BuyHatke Android Developer Hiring.
 
 <img src="https://github.com/webianks/HatkeMessenger/blob/master/screens/ic_launcher.png" height="128" width="128" >
 
