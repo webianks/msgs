@@ -30,5 +30,17 @@ You can following apis implementation in this project.
 <li>Search through all the messages </li>
 </ul>
 
+#Library Used
+
+<ul>
+<li>Play Services - Drive</li>
+<li>AppCompat-v7</li>
+<li>Design Support Library</li>
+<li>RecyclerView</li>
+<li>Google GSON</li>
+<li>TextDrawable (For Avatars)</li>
+</ul>
+
+
 #Note
 Note that its not a messenger app replacement and It doesn't have any special feature. This projects acts as implementation of various apis.
