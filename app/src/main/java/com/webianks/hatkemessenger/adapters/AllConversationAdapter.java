@@ -122,8 +122,10 @@ public class AllConversationAdapter extends RecyclerView.Adapter<AllConversation
                 data.get(getAdapterPosition()).setReadState("1");
                 notifyItemChanged(getAdapterPosition());
 
-                itemClickListener.itemClicked(data.get(getAdapterPosition()).getColor(), senderContact.getText().toString(),
-                        data.get(getAdapterPosition()).getId());
+                itemClickListener.itemClicked(data.get(getAdapterPosition()).getColor(),
+                        senderContact.getText().toString(),
+                        data.get(getAdapterPosition()).getId(),
+                        data.get(getAdapterPosition()).getReadState());
             }
 
         }

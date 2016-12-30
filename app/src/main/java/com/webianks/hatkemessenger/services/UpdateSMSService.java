@@ -4,7 +4,6 @@ import android.app.IntentService;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.net.Uri;
-import android.util.Log;
 
 /**
  * Created by R Ankit on 29-12-2016.
@@ -18,16 +17,19 @@ public class UpdateSMSService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        markSmsRead(intent.getLongExtra("id",-123));
+        markSmsRead(intent.getLongExtra("id", -123));
     }
 
     public void markSmsRead(long messageId) {
 
-        ContentValues cv = new ContentValues();
-        cv.put("read", "1");
+        try {
+            ContentValues cv = new ContentValues();
+            cv.put("read", "1");
+            getContentResolver().update(Uri.parse("content://sms/" + messageId), cv, null, null);
+        } catch (Exception e) {
 
-        long changed = getContentResolver().update(Uri.parse("content://sms/" + messageId),cv, null, null);
-        Log.e("webi", "Message changed: "+changed);
+        }
+
 
     }
 

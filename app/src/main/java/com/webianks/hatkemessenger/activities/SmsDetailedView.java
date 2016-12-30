@@ -38,6 +38,7 @@ public class SmsDetailedView extends AppCompatActivity implements
     private boolean from_reciever;
     private long _Id;
     private int color;
+    private String read = "1";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +57,8 @@ public class SmsDetailedView extends AppCompatActivity implements
 
         contact = intent.getStringExtra(Constants.CONTACT_NAME);
         _Id = intent.getLongExtra(Constants.SMS_ID,-123);
-        color = intent.getIntExtra(Constants.COLOR,757575);
+        color = intent.getIntExtra(Constants.COLOR,0);
+        read = intent.getStringExtra(Constants.READ);
 
         from_reciever = intent.getBooleanExtra(Constants.FROM_SMS_RECIEVER, false);
 
@@ -76,7 +78,9 @@ public class SmsDetailedView extends AppCompatActivity implements
         setRecyclerView(null);
 
         //right now we setting every time which is not good thing.
-        setReadSMS();
+
+        if (read!=null && read.equals("0"))
+            setReadSMS();
     }
 
     @Override

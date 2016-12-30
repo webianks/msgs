@@ -225,12 +225,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
     @Override
-    public void itemClicked(int color, String contact, long id) {
+    public void itemClicked(int color, String contact, long id,String read) {
 
         Intent intent = new Intent(this, SmsDetailedView.class);
         intent.putExtra(Constants.CONTACT_NAME, contact);
         intent.putExtra(Constants.COLOR, color);
         intent.putExtra(Constants.SMS_ID, id);
+        intent.putExtra(Constants.READ, read);
         startActivity(intent);
 
     }

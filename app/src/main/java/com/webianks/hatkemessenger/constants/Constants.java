@@ -18,4 +18,5 @@ public class Constants {
     public static final String LIST_STATE_KEY = "list_state";
     public static final String SMS_ID = "_id";
     public static final String COLOR = "color";
+    public static final String READ = "read";
 }

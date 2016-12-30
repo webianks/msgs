@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.webianks.hatkemessenger.R;
+import com.webianks.hatkemessenger.utils.ColorGeneratorModified;
 import com.webianks.hatkemessenger.utils.Helpers;
 
 /**
@@ -19,14 +20,19 @@ import com.webianks.hatkemessenger.utils.Helpers;
 
 public class SingleGroupAdapter extends RecyclerView.Adapter<SingleGroupAdapter.MyViewHolder> {
 
+    private ColorGeneratorModified generator;
     private Context context;
     private Cursor dataCursor;
     private int color;
 
-    public SingleGroupAdapter(Context context, Cursor dataCursor,int color) {
+    public SingleGroupAdapter(Context context, Cursor dataCursor, int color) {
+
         this.context = context;
         this.dataCursor = dataCursor;
         this.color = color;
+
+        if (color == 0)
+            generator = ColorGeneratorModified.MATERIAL;
     }
 
     @Override
@@ -47,9 +53,14 @@ public class SingleGroupAdapter extends RecyclerView.Adapter<SingleGroupAdapter.
         long time = dataCursor.getLong(dataCursor.getColumnIndexOrThrow("date"));
         holder.time.setText(Helpers.getDate(time));
 
-
         String name = dataCursor.getString(dataCursor.getColumnIndexOrThrow("address"));
         String firstChar = String.valueOf(name.charAt(0));
+
+        if (color == 0){
+            if (generator!=null)
+                color = generator.getColor(name);
+        }
+
         TextDrawable drawable = TextDrawable.builder().buildRound(firstChar, color);
         holder.image.setImageDrawable(drawable);
 
