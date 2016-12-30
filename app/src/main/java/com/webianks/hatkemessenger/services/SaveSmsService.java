@@ -29,5 +29,8 @@ public class SaveSmsService extends IntentService {
         values.put("date_sent",time);
         getContentResolver().insert(SmsContract.ALL_SMS_URI, values);
 
+        Intent i = new Intent("android.intent.action.MAIN").putExtra("new_sms", true);
+        this.sendBroadcast(i);
+
     }
 }

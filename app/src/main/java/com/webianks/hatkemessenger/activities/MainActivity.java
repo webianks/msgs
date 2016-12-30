@@ -3,9 +3,11 @@ package com.webianks.hatkemessenger.activities;
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.SearchManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -54,6 +56,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private String mCurFilter;
     private List<SMS> data;
     private LinearLayoutManager linearLayoutManager;
+    private BroadcastReceiver mReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,7 +126,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 builder.show();
 
                 isDefault = false;
-            }else
+            } else
                 isDefault = true;
         }
         return isDefault;
@@ -148,6 +151,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        IntentFilter intentFilter = new IntentFilter(
+                "android.intent.action.MAIN");
+
+        mReceiver = new BroadcastReceiver() {
+
+            @Override
+            public void onReceive(Context context, Intent intent) {
+
+                boolean new_sms = intent.getBooleanExtra("new_sms", false);
+
+                if (new_sms)
+                    getSupportLoaderManager().restartLoader(Constants.ALL_SMS_LOADER, null, MainActivity.this);
+
+            }
+        };
+
+        this.registerReceiver(mReceiver, intentFilter);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -265,6 +291,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onPause() {
         super.onPause();
+
+        this.unregisterReceiver(this.mReceiver);
         getSupportLoaderManager().destroyLoader(Constants.ALL_SMS_LOADER);
     }
 

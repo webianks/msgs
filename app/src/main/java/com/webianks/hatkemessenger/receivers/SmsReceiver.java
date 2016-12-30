@@ -53,6 +53,7 @@ public class SmsReceiver extends BroadcastReceiver {
                         issueNotification(context, senderNo, message);
                         saveSmsInInbox(context,currentSMS);
 
+
                     }
                     this.abortBroadcast();
                     // End of loop
