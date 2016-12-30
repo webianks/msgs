@@ -167,6 +167,8 @@ public class SmsDetailedView extends AppCompatActivity implements
                         new String[]{Manifest.permission.SEND_SMS},
                         Constants.MY_PERMISSIONS_REQUEST_SEND_SMS);
             }
+        }else{
+            sendSMSNow();
         }
     }
 
@@ -176,10 +178,7 @@ public class SmsDetailedView extends AppCompatActivity implements
             case Constants.MY_PERMISSIONS_REQUEST_SEND_SMS: {
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    SmsManager smsManager = SmsManager.getDefault();
-                    smsManager.sendTextMessage(contact, null, message, null, null);
-                    Toast.makeText(getApplicationContext(), "SMS sent.",
-                            Toast.LENGTH_LONG).show();
+                    sendSMSNow();
                 } else {
                     Toast.makeText(getApplicationContext(),
                             "SMS failed, please try again.", Toast.LENGTH_LONG).show();
@@ -187,6 +186,14 @@ public class SmsDetailedView extends AppCompatActivity implements
                 }
             }
         }
+    }
+
+    private void sendSMSNow() {
+
+        SmsManager smsManager = SmsManager.getDefault();
+        smsManager.sendTextMessage(contact, null, message, null, null);
+        Toast.makeText(getApplicationContext(), "SMS sent.",
+                Toast.LENGTH_LONG).show();
     }
 
     @Override

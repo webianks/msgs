@@ -84,6 +84,7 @@ public class AllConversationAdapter extends RecyclerView.Adapter<AllConversation
     }
 
 
+
     @Override
     public int getItemCount() {
         return (data == null) ? 0 : data.size();

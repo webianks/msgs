@@ -3,10 +3,12 @@ package com.webianks.hatkemessenger.activities;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.telephony.SmsManager;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.webianks.hatkemessenger.R;
 
@@ -56,8 +58,23 @@ public class NewSMSActivity extends AppCompatActivity implements View.OnClickLis
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btnSendSMS:
+
+                phoneNo = txtphoneNo.getText().toString();
+                message = txtMessage.getText().toString();
+
+                sendSMSNow();
+
                 break;
         }
+    }
+
+    private void sendSMSNow() {
+
+        SmsManager smsManager = SmsManager.getDefault();
+        smsManager.sendTextMessage(phoneNo, null, message, null, null);
+
+        Toast.makeText(getApplicationContext(), "SMS sent.", Toast.LENGTH_LONG).show();
+
     }
 
 

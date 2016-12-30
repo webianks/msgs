@@ -78,7 +78,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         recyclerView.setLayoutManager(linearLayoutManager);
         fab.setOnClickListener(this);
 
-
         if (checkDefaultSettings())
             checkPermissions();
 
@@ -115,6 +114,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
+                                checkPermissions();
                             }
                         })
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
