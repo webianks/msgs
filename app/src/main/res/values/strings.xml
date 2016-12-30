@@ -12,5 +12,7 @@
     <string name="app_label">Search</string>
     <string name="search_hint">Search Messages..</string>
     <string name="search">Search</string>
+    <string name="sms_delivered">SMS delivered</string>
+    <string name="sms_not_delivered">SMS not delivered</string>
 
 </resources>
