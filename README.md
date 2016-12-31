@@ -8,7 +8,7 @@ SMS App built as an assignment for BuyHatke Android Developer Hiring.
 <img src="https://github.com/webianks/HatkeMessenger/blob/master/screens/screen2.png"  height="700" width="400" >
 
 #Implementations
-You can following apis implementation in this project.
+You can find following apis implementation in this project.
 
 <ul>
 <li>SMS Content Provider</li>
