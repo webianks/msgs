@@ -53,7 +53,7 @@ Note that its not a messenger app replacement and It doesn't have any special fe
 
 #License
 ```
- Copyright 2016 Ramankit Singh
+ Copyright 2017 Ramankit Singh
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
