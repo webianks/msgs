@@ -3,11 +3,11 @@ SMS App built as an assignment for BuyHatke Android Developer Hiring.
 
 <img src="https://github.com/webianks/HatkeMessenger/blob/master/screens/ic_launcher.png" height="128" width="128" >
 
-#Screens
+# Screens
 <img src="https://github.com/webianks/HatkeMessenger/blob/master/screens/screen1.png" align="left" height="700" width="400" >
 <img src="https://github.com/webianks/HatkeMessenger/blob/master/screens/screen2.png"  height="700" width="400" >
 
-#Implementations
+# Implementations
 You can find following apis implementation in this project.
 
 <ul>
@@ -19,7 +19,7 @@ You can find following apis implementation in this project.
 <li>Notifications </li>
 </ul>
 
-#Features
+# Features
 
 <ul>
 <li>Send SMS</li>
@@ -31,7 +31,7 @@ You can find following apis implementation in this project.
 <li>Delete Single Message</li>
 </ul>
 
-#Libraries Used
+# Libraries Used
 
 <ul>
 <li>Play Services - Drive</li>
@@ -43,15 +43,15 @@ You can find following apis implementation in this project.
 </ul>
 
 
-#Download
+# Download
 
 <a href="https://drive.google.com/open?id=0B2iJjTDJnXrWcFNaeXNTSXlGU3c"><img src="https://github.com/webianks/HatkeMessenger/blob/master/screens/download.png" height="74" width="50"></a>
 
 
-#Note
+# Note
 Note that its not a messenger app replacement and It doesn't have any special feature. This projects acts as implementation of various apis.
 
-#License
+# License
 ```
  Copyright 2017 Ramankit Singh
 
