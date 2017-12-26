@@ -13,6 +13,7 @@ public class Constants {
     public static final String FROM_SMS_RECIEVER = "from_sms_receiver";
     public static final CharSequence BACKUP = "backup";
     public static final int MY_PERMISSIONS_REQUEST_READ_SMS = 1;
+    public static final int MY_PERMISSIONS_REQUEST_READ_CONTACTS = 2;
     public static final String PREF_NAME = "sms_pref";
     public static final String SMS_JSON = "sms_json";
     public static final String LIST_STATE_KEY = "list_state";
@@ -22,4 +23,5 @@ public class Constants {
     public static final CharSequence RESTORE = "restore";
     public static final int TYPE_RESTORE = 1;
     public static final int TYPE_BACKUP = 0;
+    public static final int RESULT_PICK_CONTACT = 85;
 }

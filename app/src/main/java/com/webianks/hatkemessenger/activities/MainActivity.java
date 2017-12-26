@@ -81,6 +81,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (checkDefaultSettings())
             checkPermissions();
 
+
     }
 
     private void checkPermissions() {
@@ -95,9 +96,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         new String[]{Manifest.permission.READ_SMS},
                         Constants.MY_PERMISSIONS_REQUEST_READ_SMS);
             }
-        } else
+
+        }
+
+
+        int permissionCheck = ContextCompat.checkSelfPermission(this,
+                Manifest.permission.READ_CONTACTS);
+         if (permissionCheck==0)
             getSupportLoaderManager().initLoader(Constants.ALL_SMS_LOADER, null, this);
+
+
+
+
     }
+
 
     private boolean checkDefaultSettings() {
 
@@ -208,7 +220,42 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
-            case Constants.MY_PERMISSIONS_REQUEST_READ_SMS: {
+            case Constants.MY_PERMISSIONS_REQUEST_READ_SMS:
+                {
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    if (ContextCompat.checkSelfPermission(this,
+                            Manifest.permission.READ_CONTACTS)
+                            != PackageManager.PERMISSION_GRANTED) {
+                        if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                                Manifest.permission.READ_CONTACTS)) {
+                        } else {
+                            ActivityCompat.requestPermissions(this,
+                                    new String[]{Manifest.permission.READ_CONTACTS},
+                                    Constants.MY_PERMISSIONS_REQUEST_READ_CONTACTS);
+                        }
+
+                    } else
+
+
+                        getSupportLoaderManager().initLoader(Constants.ALL_SMS_LOADER, null, this);
+
+
+
+
+
+
+
+
+
+                } else {
+                    Toast.makeText(getApplicationContext(),
+                            "Can't access messages.", Toast.LENGTH_LONG).show();
+                    return;
+                }
+            }
+            case Constants.MY_PERMISSIONS_REQUEST_READ_CONTACTS:
+            {
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
@@ -313,8 +360,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 try {
                     objSMS = new SMS();
                     objSMS.setId(c.getLong(c.getColumnIndexOrThrow("_id")));
-                    objSMS.setAddress(c.getString(c
-                            .getColumnIndexOrThrow("address")));
+                    String num=c.getString(c.getColumnIndexOrThrow("address"));
+                    objSMS.setAddress(num);
                     objSMS.setMsg(c.getString(c.getColumnIndexOrThrow("body")));
                     objSMS.setReadState(c.getString(c.getColumnIndex("read")));
                     objSMS.setTime(c.getLong(c.getColumnIndexOrThrow("date")));
