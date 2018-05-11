@@ -3,7 +3,7 @@
 [![License](https://img.shields.io/badge/License-Apache--2.0-brightgreen.svg)](https://github.com/webianks/HatkeMessenger/blob/master/LICENCE)
 
 # HatkeMessenger
-SMS App built as an assignment for BuyHatke Android Developer Hiring.
+SMS App utilising some the sms apis of Android.
 
 <img src="https://github.com/webianks/HatkeMessenger/blob/master/screens/ic_launcher.png" height="128" width="128" >
 
