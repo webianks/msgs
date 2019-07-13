@@ -10,7 +10,7 @@ import java.util.Random;
  */
 public class ColorGeneratorModified {
 
-    public static ColorGeneratorModified DEFAULT;
+    private static ColorGeneratorModified DEFAULT;
 
     public static ColorGeneratorModified MATERIAL;
 
@@ -49,7 +49,7 @@ public class ColorGeneratorModified {
     private final List<Integer> mColors;
     private final Random mRandom;
 
-    public static ColorGeneratorModified create(List<Integer> colorList) {
+    private static ColorGeneratorModified create(List<Integer> colorList) {
         return new ColorGeneratorModified(colorList);
     }
 

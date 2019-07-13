@@ -13,17 +13,6 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.Telephony;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -31,6 +20,18 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.loader.app.LoaderManager;
+import androidx.loader.content.CursorLoader;
+import androidx.loader.content.Loader;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.webianks.hatkemessenger.R;
@@ -71,9 +72,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void init() {
 
-        recyclerView = (RecyclerView) findViewById(R.id.recyclerview);
-        fab = (FloatingActionButton) findViewById(R.id.fab_new);
-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        recyclerView = findViewById(R.id.recyclerview);
+        fab =  findViewById(R.id.fab_new);
+        progressBar = findViewById(R.id.progressBar);
         linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
         fab.setOnClickListener(this);
@@ -119,24 +120,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             if (!Telephony.Sms.getDefaultSmsPackage(this).equals(getPackageName())) {
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(MainActivity.this);
                 builder.setMessage("This app is not set as your default messaging app. Do you want to set it as default?")
                         .setCancelable(false)
-                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                                checkPermissions();
-                            }
+                        .setNegativeButton("No", (dialog, which) -> {
+                            dialog.dismiss();
+                            checkPermissions();
                         })
-                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                            @TargetApi(19)
-                            public void onClick(DialogInterface dialog, int id) {
-                                Intent intent = new Intent(Telephony.Sms.Intents.ACTION_CHANGE_DEFAULT);
-                                intent.putExtra(Telephony.Sms.Intents.EXTRA_PACKAGE_NAME, getPackageName());
-                                startActivity(intent);
-                                checkPermissions();
-                            }
+                        .setPositiveButton("Yes", (dialog, id) -> {
+                            Intent intent = new Intent(Telephony.Sms.Intents.ACTION_CHANGE_DEFAULT);
+                            intent.putExtra(Telephony.Sms.Intents.EXTRA_PACKAGE_NAME, getPackageName());
+                            startActivity(intent);
+                            checkPermissions();
                         });
                 builder.show();
 
@@ -208,10 +203,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        switch (item.getItemId()) {
-            case R.id.ic_settings:
-                startActivity(new Intent(this, SettingsActivity.class));
-                break;
+        if (item.getItemId() == R.id.ic_settings) {
+            startActivity(new Intent(this, SettingsActivity.class));
         }
         return super.onOptionsItemSelected(item);
     }

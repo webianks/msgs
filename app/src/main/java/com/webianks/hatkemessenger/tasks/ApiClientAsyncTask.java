@@ -12,6 +12,9 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+
+import androidx.annotation.NonNull;
+
 import java.util.concurrent.CountDownLatch;
 
 /**
@@ -22,13 +25,14 @@ public abstract class ApiClientAsyncTask<Params, Progress, Result>
 
     private GoogleApiClient mClient;
 
-    public ApiClientAsyncTask(Context context) {
+    ApiClientAsyncTask(Context context) {
         GoogleApiClient.Builder builder = new GoogleApiClient.Builder(context)
                 .addApi(Drive.API)
                 .addScope(Drive.SCOPE_APPFOLDER);
         mClient = builder.build();
     }
 
+    @SafeVarargs
     @Override
     protected final Result doInBackground(Params... params) {
         Log.d("TAG", "in background");
@@ -45,7 +49,7 @@ public abstract class ApiClientAsyncTask<Params, Progress, Result>
         });
         mClient.registerConnectionFailedListener(new OnConnectionFailedListener() {
             @Override
-            public void onConnectionFailed(ConnectionResult arg0) {
+            public void onConnectionFailed(@NonNull ConnectionResult arg0) {
                 latch.countDown();
             }
         });
@@ -74,7 +78,7 @@ public abstract class ApiClientAsyncTask<Params, Progress, Result>
     /**
      * Gets the GoogleApliClient owned by this async task.
      */
-    protected GoogleApiClient getGoogleApiClient() {
+    GoogleApiClient getGoogleApiClient() {
         return mClient;
     }
 }

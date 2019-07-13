@@ -4,9 +4,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Typeface;
 import android.net.Uri;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +12,12 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.amulyakhare.textdrawable.TextDrawable;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.webianks.hatkemessenger.R;
 import com.webianks.hatkemessenger.SMS;
 import com.webianks.hatkemessenger.utils.ColorGeneratorModified;
@@ -32,7 +34,7 @@ public class AllConversationAdapter extends RecyclerView.Adapter<AllConversation
     private Context context;
     private List<SMS> data;
     private ItemCLickListener itemClickListener;
-    ColorGeneratorModified generator = ColorGeneratorModified.MATERIAL;
+    private ColorGeneratorModified generator = ColorGeneratorModified.MATERIAL;
 
 
     public AllConversationAdapter(Context context, List<SMS> data) {
@@ -41,17 +43,17 @@ public class AllConversationAdapter extends RecyclerView.Adapter<AllConversation
 
     }
 
+    @NonNull
     @Override
-    public AllConversationAdapter.MyHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public AllConversationAdapter.MyHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(R.layout.single_sms_small_layout, parent, false);
-        MyHolder myHolder = new MyHolder(view);
-        return myHolder;
+        return new MyHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(AllConversationAdapter.MyHolder holder, int position) {
+    public void onBindViewHolder(@NonNull AllConversationAdapter.MyHolder holder, int position) {
 
         SMS SMS = data.get(position);
 
@@ -103,13 +105,13 @@ public class AllConversationAdapter extends RecyclerView.Adapter<AllConversation
         private TextView time;
         private RelativeLayout mainLayout;
 
-        public MyHolder(View itemView) {
+        MyHolder(View itemView) {
             super(itemView);
-            senderImage = (ImageView) itemView.findViewById(R.id.smsImage);
-            senderContact = (TextView) itemView.findViewById(R.id.smsSender);
-            message = (TextView) itemView.findViewById(R.id.smsContent);
-            time = (TextView) itemView.findViewById(R.id.time);
-            mainLayout = (RelativeLayout) itemView.findViewById(R.id.small_layout_main);
+            senderImage =  itemView.findViewById(R.id.smsImage);
+            senderContact =  itemView.findViewById(R.id.smsSender);
+            message =  itemView.findViewById(R.id.smsContent);
+            time =  itemView.findViewById(R.id.time);
+            mainLayout =  itemView.findViewById(R.id.small_layout_main);
 
             mainLayout.setOnClickListener(this);
             mainLayout.setOnLongClickListener(this);
@@ -138,7 +140,7 @@ public class AllConversationAdapter extends RecyclerView.Adapter<AllConversation
             ArrayAdapter<String> adapter = new ArrayAdapter<>(context
                     , android.R.layout.simple_list_item_1, android.R.id.text1, items);
 
-            new AlertDialog.Builder(context)
+            new MaterialAlertDialogBuilder(context)
                     .setAdapter(adapter, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
@@ -153,7 +155,7 @@ public class AllConversationAdapter extends RecyclerView.Adapter<AllConversation
 
         private void deleteDialog() {
 
-            AlertDialog.Builder alert = new AlertDialog.Builder(context);
+            MaterialAlertDialogBuilder alert = new MaterialAlertDialogBuilder(context);
             alert.setMessage("Are you sure you want to delete this message?");
             alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                 @Override
@@ -176,16 +178,14 @@ public class AllConversationAdapter extends RecyclerView.Adapter<AllConversation
         }
     }
 
-    public void deleteSMS(long messageId, int position) {
+    private void deleteSMS(long messageId, int position) {
 
         long affected = context.getContentResolver().delete(
                 Uri.parse("content://sms/" + messageId), null, null);
 
         if (affected != 0) {
-
             data.remove(position);
             notifyItemRemoved(position);
-
         }
 
     }

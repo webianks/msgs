@@ -9,9 +9,10 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.NotificationCompat;
 import android.telephony.SmsMessage;
 import android.util.Log;
+
+import androidx.core.app.NotificationCompat;
 
 import com.webianks.hatkemessenger.R;
 import com.webianks.hatkemessenger.activities.SmsDetailedView;
@@ -26,9 +27,6 @@ public class SmsReceiver extends BroadcastReceiver {
 
 
     private String TAG = SmsReceiver.class.getSimpleName();
-    private Bundle bundle;
-    private SmsMessage currentSMS;
-    private int mNotificationId = 101;
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -37,21 +35,21 @@ public class SmsReceiver extends BroadcastReceiver {
 
             Log.e(TAG, "smsReceiver");
 
-            bundle = intent.getExtras();
+            Bundle bundle = intent.getExtras();
             if (bundle != null) {
                 Object[] pdu_Objects = (Object[]) bundle.get("pdus");
                 if (pdu_Objects != null) {
 
                     for (Object aObject : pdu_Objects) {
 
-                        currentSMS = getIncomingMessage(aObject, bundle);
+                        SmsMessage currentSMS = getIncomingMessage(aObject, bundle);
 
                         String senderNo = currentSMS.getDisplayOriginatingAddress();
                         String message = currentSMS.getDisplayMessageBody();
                         //Log.d(TAG, "senderNum: " + senderNo + " :\n message: " + message);
 
                         issueNotification(context, senderNo, message);
-                        saveSmsInInbox(context,currentSMS);
+                        saveSmsInInbox(context, currentSMS);
 
 
                     }
@@ -101,6 +99,7 @@ public class SmsReceiver extends BroadcastReceiver {
 
         NotificationManager mNotifyMgr =
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        int mNotificationId = 101;
         mNotifyMgr.notify(mNotificationId, mBuilder.build());
 
     }
