@@ -1,11 +1,9 @@
 package com.webianks.hatkemessenger.activities;
 
 import android.Manifest;
-import android.annotation.TargetApi;
 import android.app.SearchManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -73,7 +71,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void init() {
 
         recyclerView = findViewById(R.id.recyclerview);
-        fab =  findViewById(R.id.fab_new);
+        fab = findViewById(R.id.fab_new);
         progressBar = findViewById(R.id.progressBar);
         linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
@@ -103,10 +101,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         int permissionCheck = ContextCompat.checkSelfPermission(this,
                 Manifest.permission.READ_CONTACTS);
-         if (permissionCheck==0)
+        if (permissionCheck == 0)
             getSupportLoaderManager().initLoader(Constants.ALL_SMS_LOADER, null, this);
-
-
 
 
     }
@@ -213,8 +209,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
-            case Constants.MY_PERMISSIONS_REQUEST_READ_SMS:
-                {
+            case Constants.MY_PERMISSIONS_REQUEST_READ_SMS: {
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     if (ContextCompat.checkSelfPermission(this,
@@ -234,21 +229,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         getSupportLoaderManager().initLoader(Constants.ALL_SMS_LOADER, null, this);
 
 
-
-
-
-
-
-
-
                 } else {
                     Toast.makeText(getApplicationContext(),
                             "Can't access messages.", Toast.LENGTH_LONG).show();
                     return;
                 }
             }
-            case Constants.MY_PERMISSIONS_REQUEST_READ_CONTACTS:
-            {
+            case Constants.MY_PERMISSIONS_REQUEST_READ_CONTACTS: {
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
@@ -265,7 +252,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
     @Override
-    public void itemClicked(int color, String contact, long id,String read) {
+    public void itemClicked(int color, String contact, long id, String read) {
 
         Intent intent = new Intent(this, SmsDetailedView.class);
         intent.putExtra(Constants.CONTACT_NAME, contact);
@@ -314,7 +301,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onLoaderReset(Loader<Cursor> loader) {
 
         data = null;
-        allConversationAdapter.notifyDataSetChanged();
+        if (allConversationAdapter != null)
+            allConversationAdapter.notifyDataSetChanged();
         //allConversationAdapter.swapCursor(null);
     }
 
@@ -353,7 +341,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 try {
                     objSMS = new SMS();
                     objSMS.setId(c.getLong(c.getColumnIndexOrThrow("_id")));
-                    String num=c.getString(c.getColumnIndexOrThrow("address"));
+                    String num = c.getString(c.getColumnIndexOrThrow("address"));
                     objSMS.setAddress(num);
                     objSMS.setMsg(c.getString(c.getColumnIndexOrThrow("body")));
                     objSMS.setReadState(c.getString(c.getColumnIndex("read")));

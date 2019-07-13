@@ -13,6 +13,9 @@
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/editTextLayout"
         android:layout_width="wrap_content"
+        app:boxBackgroundColor="@color/grey"
+        android:layout_marginTop="@dimen/activity_horizontal_margin"
+        app:boxBackgroundMode="outline"
         android:layout_height="wrap_content">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -28,7 +31,10 @@
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/editTextLayout2"
         android:layout_width="match_parent"
+        android:layout_marginTop="@dimen/activity_horizontal_margin"
         android:layout_below="@+id/editTextLayout"
+        app:boxBackgroundColor="@color/grey"
+        app:boxBackgroundMode="outline"
         android:layout_height="wrap_content">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -43,11 +49,16 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnSendSMS"
+        app:cornerRadius="20dp"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="55dp"
+        android:paddingStart="40dp"
+        android:paddingEnd="40dp"
+        app:strokeColor="@color/colorPrimary"
         android:layout_below="@+id/editTextLayout2"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="46dp"
+        android:layout_marginTop="26dp"
         android:text="Send Sms" />
 
     <ImageButton
@@ -56,6 +67,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/editTextLayout2"
         android:layout_alignParentEnd="true"
+        android:paddingTop="@dimen/activity_horizontal_margin"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
         android:layout_toEndOf="@+id/editTextLayout"
