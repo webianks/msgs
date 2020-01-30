@@ -2,7 +2,7 @@
 [![Open Source Love](https://badges.frapsoft.com/os/v1/open-source.svg?v=102)](http://www.apache.org/licenses/LICENSE-2.0)
 [![License](https://img.shields.io/badge/License-Apache--2.0-brightgreen.svg)](https://github.com/webianks/HatkeMessenger/blob/master/LICENCE)
 
-# HatkeMessenger
+# Msgs
 SMS App utilising some the sms apis of Android.
 
 <img src="https://github.com/webianks/HatkeMessenger/blob/master/screens/ic_launcher.png" height="128" width="128" >
