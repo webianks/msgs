@@ -53,7 +53,7 @@ You can find following apis implementation in this project.
 
 
 # Note
-Note that its not a messenger app replacement and It doesn't have any special feature. This projects acts as implementation of various apis.
+Note that its not a messenger app replacement and It doesn't have any special feature. This project acts as implementation of various sms apis.
 
 # License
 ```
