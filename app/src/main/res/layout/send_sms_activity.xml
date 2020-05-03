@@ -49,10 +49,10 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnSendSMS"
-        app:cornerRadius="20dp"
+        app:cornerRadius="5dp"
         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         android:layout_width="match_parent"
-        android:layout_height="55dp"
+        android:layout_height="58dp"
         android:paddingStart="40dp"
         android:paddingEnd="40dp"
         app:strokeColor="@color/colorPrimary"

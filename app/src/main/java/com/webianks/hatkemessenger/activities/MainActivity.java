@@ -18,6 +18,7 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.core.app.ActivityCompat;
@@ -50,12 +51,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         ItemCLickListener, LoaderManager.LoaderCallbacks<Cursor>, SearchView.OnQueryTextListener {
 
     private RecyclerView recyclerView;
-    private FloatingActionButton fab;
     private AllConversationAdapter allConversationAdapter;
     private String TAG = MainActivity.class.getSimpleName();
     private String mCurFilter;
     private List<SMS> data;
-    private LinearLayoutManager linearLayoutManager;
     private BroadcastReceiver mReceiver;
     private ProgressBar progressBar;
 
@@ -71,9 +70,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void init() {
 
         recyclerView = findViewById(R.id.recyclerview);
-        fab = findViewById(R.id.fab_new);
+        FloatingActionButton fab = findViewById(R.id.fab_new);
         progressBar = findViewById(R.id.progressBar);
-        linearLayoutManager = new LinearLayoutManager(this);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
         fab.setOnClickListener(this);
 
@@ -103,7 +102,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Manifest.permission.READ_CONTACTS);
         if (permissionCheck == 0)
             getSupportLoaderManager().initLoader(Constants.ALL_SMS_LOADER, null, this);
-
 
     }
 
@@ -147,13 +145,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View view) {
-
-        switch (view.getId()) {
-
-            case R.id.fab_new:
-
-                startActivity(new Intent(this, NewSMSActivity.class));
-                break;
+        if (view.getId() == R.id.fab_new) {
+            startActivity(new Intent(this, NewSMSActivity.class));
         }
     }
 
@@ -263,6 +256,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
+    @NonNull
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 
@@ -283,7 +277,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+    public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor cursor) {
 
         progressBar.setVisibility(View.GONE);
 
@@ -292,13 +286,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             //allConversationAdapter.swapCursor(cursor);
             getAllSmsToFile(cursor);
 
-        } else {
-            //no sms
-        }
+        }  //no sms
+
     }
 
     @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
+    public void onLoaderReset(@NonNull Loader<Cursor> loader) {
 
         data = null;
         if (allConversationAdapter != null)
@@ -392,7 +385,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         editor.apply();
         //List<String> target2 = gson.fromJson(json, listType);
         //Log.d(TAG, json);
-
     }
 
 }
