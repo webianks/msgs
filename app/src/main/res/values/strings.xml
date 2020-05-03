@@ -1,6 +1,6 @@
 <resources>
 
-    <string name="app_name">Hatke Messenger</string>
+    <string name="app_name">Messages</string>
     <string name="title">SENDER</string>
     <string name="content_small">This is the preview of the full SMS. To read more click on the SMS.</string>
     <string name="title_activity_sms_detailed_view">SmsDetailedView</string>
@@ -21,5 +21,9 @@
     <string name="restore_backup">Restore Backup</string>
     <string name="restore_backup_all">Restore all your drive stored sms.</string>
     <string name="google_drive_restore">Restore Backup</string>
+    <string name="label_new_sms">New SMS</string>
+    <string name="hint_phone">Enter Phone Number</string>
+    <string name="hint_msg">Enter SMS</string>
+    <string name="action_send">Send Sms</string>
 
 </resources>

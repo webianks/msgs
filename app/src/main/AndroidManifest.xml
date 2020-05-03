@@ -31,7 +31,9 @@
 
         </activity>
 
-        <activity android:name=".activities.NewSMSActivity">
+        <activity android:name=".activities.NewSMSActivity"
+            android:label="@string/label_new_sms"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
                 <action android:name="android.intent.action.SENDTO" />
