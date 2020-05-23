@@ -1,8 +1,10 @@
 package com.webianks.hatkemessenger.adapters
 
 import android.content.Context
+import android.database.Cursor
 import android.graphics.Typeface
 import android.net.Uri
+import android.provider.ContactsContract
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnLongClickListener
@@ -38,10 +40,11 @@ class AllConversationAdapter(private val context: Context, private val data: Arr
 
     override fun onBindViewHolder(holder: MyHolder, position: Int) {
         val sms = data!![position]
-        holder.senderContact.text = sms.address
+        val savedContactName = getContactName(sms.address)
+        holder.senderContact.text = savedContactName;
         holder.message.text = sms.msg
         val color = sms.address?.let { generator?.getColor(it) }
-        val firstChar = sms.address?.get(0).toString()
+        val firstChar = savedContactName?.get(0).toString() ?: sms.address?.get(0).toString()
         val drawable = TextDrawable.builder().buildRound(firstChar, color!!)
         holder.senderImage.setImageDrawable(drawable)
         sms.color = color
@@ -81,7 +84,7 @@ class AllConversationAdapter(private val context: Context, private val data: Arr
             if (itemClickListener != null) {
                 data!![adapterPosition]?.readState = "1"
                 notifyItemChanged(adapterPosition)
-                data[adapterPosition]?.color?.let { data[adapterPosition]?.id?.let { it1 -> itemClickListener!!.itemClicked(it, senderContact.text.toString(), it1, data[adapterPosition]?.readState) } }
+                data[adapterPosition]?.color?.let { data[adapterPosition]?.id?.let { it1 -> itemClickListener!!.itemClicked(it, data[adapterPosition]?.address, senderContact.text.toString(), it1, data[adapterPosition]?.readState) } }
             }
         }
 
@@ -120,6 +123,29 @@ class AllConversationAdapter(private val context: Context, private val data: Arr
             data?.removeAt(position)
             notifyItemRemoved(position)
         }
+    }
+
+    private fun getContactName(number: String?): String? {
+        var c: Cursor? = null
+        var cName: String? = null
+        try {
+            val uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(number))
+            val nameColumn = arrayOf(ContactsContract.PhoneLookup.DISPLAY_NAME)
+            c = context.contentResolver.query(uri, nameColumn, null, null, null)
+            cName = if (c == null || c.count == 0) {
+                number
+            } else {
+                c.moveToFirst()
+                c.getString(0)
+            }
+        } catch (e: Exception) {
+            cName = number
+        } finally {
+            if (c != null && !c.isClosed) {
+                c.close()
+            }
+        }
+        return cName
     }
 
 }

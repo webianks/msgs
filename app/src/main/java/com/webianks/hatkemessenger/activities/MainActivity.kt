@@ -12,7 +12,6 @@ import android.text.TextUtils
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
@@ -22,9 +21,7 @@ import androidx.loader.app.LoaderManager
 import androidx.loader.content.CursorLoader
 import androidx.loader.content.Loader
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.webianks.hatkemessenger.R
@@ -68,15 +65,18 @@ class MainActivity : AppCompatActivity(),
                         Manifest.permission.READ_SMS)
                 != PackageManager.PERMISSION_GRANTED) {
 
-            if (!ActivityCompat.shouldShowRequestPermissionRationale(this,
-                            Manifest.permission.READ_SMS)) {
                 ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_SMS),
                         Constants.MY_PERMISSIONS_REQUEST_READ_SMS)
+        }else {
+            if (ContextCompat.checkSelfPermission(this,
+                            Manifest.permission.READ_CONTACTS)
+                    != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_CONTACTS),
+                        Constants.MY_PERMISSIONS_REQUEST_READ_CONTACTS)
+            }else{
+                LoaderManager.getInstance(this).initLoader(Constants.ALL_SMS_LOADER, null, this)
             }
         }
-        val permissionCheck = ContextCompat.checkSelfPermission(this,
-                Manifest.permission.READ_CONTACTS)
-        if (permissionCheck == 0) LoaderManager.getInstance(this).initLoader(Constants.ALL_SMS_LOADER, null, this)
     }
 
     private fun checkDefaultSettings(): Boolean {
@@ -160,7 +160,7 @@ class MainActivity : AppCompatActivity(),
                                 ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_CONTACTS),
                                         Constants.MY_PERMISSIONS_REQUEST_READ_CONTACTS)
                             }
-                        } else supportLoaderManager.initLoader(Constants.ALL_SMS_LOADER, null, this)
+                        } else LoaderManager.getInstance(this@MainActivity).initLoader(Constants.ALL_SMS_LOADER, null, this)
                     } else {
                         Toast.makeText(applicationContext,
                                 "Can't access messages.", Toast.LENGTH_LONG).show()
@@ -170,7 +170,7 @@ class MainActivity : AppCompatActivity(),
                 run {
                     if (grantResults.size > 0
                             && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                        supportLoaderManager.initLoader(Constants.ALL_SMS_LOADER, null, this)
+                        LoaderManager.getInstance(this@MainActivity).initLoader(Constants.ALL_SMS_LOADER, null, this)
                     } else {
                         Toast.makeText(applicationContext,
                                 "Can't access messages.", Toast.LENGTH_LONG).show()
@@ -181,19 +181,19 @@ class MainActivity : AppCompatActivity(),
             Constants.MY_PERMISSIONS_REQUEST_READ_CONTACTS -> {
                 if (grantResults.isNotEmpty()
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    supportLoaderManager.initLoader(Constants.ALL_SMS_LOADER, null, this)
+                    LoaderManager.getInstance(this@MainActivity).initLoader(Constants.ALL_SMS_LOADER, null, this)
                 } else {
-                    Toast.makeText(applicationContext,
-                            "Can't access messages.", Toast.LENGTH_LONG).show()
+                    LoaderManager.getInstance(this@MainActivity).initLoader(Constants.ALL_SMS_LOADER, null, this)
                     return
                 }
             }
         }
     }
 
-    override fun itemClicked(color: Int, contact: String?, id: Long, read: String?) {
+    override fun itemClicked(color: Int, contact: String?, savedContactName: String?, id: Long, read: String?) {
         val intent = Intent(this, SmsDetailedView::class.java)
         intent.putExtra(Constants.CONTACT_NAME, contact)
+        intent.putExtra(Constants.SAVED_CONTACT_NAME, savedContactName);
         intent.putExtra(Constants.COLOR, color)
         intent.putExtra(Constants.SMS_ID, id)
         intent.putExtra(Constants.READ, read)

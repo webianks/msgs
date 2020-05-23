@@ -3,6 +3,7 @@ package com.webianks.hatkemessenger.constants
 
 object Constants {
     const val CONTACT_NAME = "contact_name"
+    const val SAVED_CONTACT_NAME = "saved_contact_name"
     const val CONVERSATION_LOADER = 321
     const val ALL_SMS_LOADER = 123
     const val MY_PERMISSIONS_REQUEST_SEND_SMS = 0
