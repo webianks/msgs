@@ -19,7 +19,8 @@ import com.webianks.hatkemessenger.utils.Helpers
  */
 class SingleGroupAdapter(private val context: Context,
                          private var dataCursor: Cursor?,
-                         private var color: Int) : RecyclerView.Adapter<MyViewHolder>() {
+                         private var color: Int,
+                         private  val savedContactName: String?) : RecyclerView.Adapter<MyViewHolder>() {
 
     private lateinit var generator: ColorGeneratorModified
 
@@ -35,7 +36,7 @@ class SingleGroupAdapter(private val context: Context,
         val time = dataCursor!!.getLong(dataCursor!!.getColumnIndexOrThrow("date"))
         holder.time.text = Helpers.getDate(time)
         val name = dataCursor!!.getString(dataCursor!!.getColumnIndexOrThrow("address"))
-        val firstChar = name[0].toString()
+        val firstChar = savedContactName?.get(0).toString() ?: name[0].toString()
 
         if (color == 0)
             color = generator.getColor(name)

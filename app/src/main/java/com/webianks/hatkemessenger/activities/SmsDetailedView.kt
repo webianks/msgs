@@ -35,6 +35,7 @@ class SmsDetailedView : AppCompatActivity(),
         View.OnClickListener {
 
     private var contact: String? = null
+    private var savedContactName: String? = null
     private var singleGroupAdapter: SingleGroupAdapter? = null
     private var recyclerView: RecyclerView? = null
     private var etMessage: EditText? = null
@@ -56,11 +57,17 @@ class SmsDetailedView : AppCompatActivity(),
     private fun init() {
         val intent = intent
         contact = intent.getStringExtra(Constants.CONTACT_NAME)
+        savedContactName = intent.getStringExtra(Constants.SAVED_CONTACT_NAME)
         _Id = intent.getLongExtra(Constants.SMS_ID, -123)
         color = intent.getIntExtra(Constants.COLOR, 0)
         read = intent.getStringExtra(Constants.READ)
         from_reciever = intent.getBooleanExtra(Constants.FROM_SMS_RECIEVER, false)
-        if (supportActionBar != null) supportActionBar!!.setTitle(contact)
+        if (supportActionBar != null) {
+            if (savedContactName == null)
+                supportActionBar!!.setTitle(contact)
+            else
+                supportActionBar!!.setTitle(savedContactName)
+        }
         recyclerView = findViewById(R.id.recyclerview)
         val linearLayoutManager = LinearLayoutManager(this)
         linearLayoutManager.reverseLayout = true
@@ -82,7 +89,7 @@ class SmsDetailedView : AppCompatActivity(),
 
 
     private fun setRecyclerView(cursor: Cursor?) {
-        singleGroupAdapter = SingleGroupAdapter(this, cursor, color)
+        singleGroupAdapter = SingleGroupAdapter(this, cursor, color, savedContactName)
         recyclerView!!.adapter = singleGroupAdapter
     }
 
